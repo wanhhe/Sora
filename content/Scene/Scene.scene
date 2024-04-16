@@ -1,0 +1,127 @@
+{
+    "scene_objects": [
+        {
+            "id": 0,
+            "is_editor": true,
+            "is_selected": true,
+            "light": {
+                "light color": [
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "light drag_speed": 0.10000000149011612,
+                "light type": 1
+            },
+            "name": "Global Light",
+            "transform": {
+                "Front": [
+                    0.0,
+                    -0.8660253882408142,
+                    -0.5000001192092896
+                ],
+                "Right": [
+                    -1.0,
+                    -0.0,
+                    0.0
+                ],
+                "Up": [
+                    0.0,
+                    -0.5000001192092896,
+                    0.8660253882408142
+                ],
+                "position": [
+                    0.0,
+                    10.0,
+                    0.0
+                ],
+                "rotation": [
+                    120.00000762939453,
+                    -0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            }
+        },
+        {
+            "id": 1,
+            "is_editor": true,
+            "is_selected": false,
+            "name": "post process manager",
+            "transform": {
+                "Front": [
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "Right": [
+                    -1.0,
+                    0.0,
+                    0.0
+                ],
+                "Up": [
+                    0.0,
+                    1.0,
+                    0.0
+                ],
+                "position": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            }
+        },
+        {
+            "id": 3,
+            "is_editor": false,
+            "is_selected": false,
+            "name": "cube",
+            "transform": {
+                "Front": [
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "Right": [
+                    -1.0,
+                    0.0,
+                    0.0
+                ],
+                "Up": [
+                    0.0,
+                    1.0,
+                    0.0
+                ],
+                "position": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            }
+        }
+    ]
+}

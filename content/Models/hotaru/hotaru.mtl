@@ -1,0 +1,220 @@
+# Blender 3.3.0 MTL File: 'None'
+# www.blender.org
+
+newmtl m0.004
+Ns 4.999998
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 1
+map_Kd Texture/face.png
+map_Ke Texture/Avatar_Girl_Sword_PlayerGirl_Tex_Face_Lightmap.png
+
+newmtl m1.004
+Ns 4.999998
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 1
+map_Kd Texture/face.png
+map_Ke Texture/Avatar_Girl_Sword_PlayerGirl_Tex_Face_Lightmap.png
+
+newmtl m10.004
+Ns 4.999998
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 1
+map_Kd Texture/hair.png
+map_Ke Texture/Avatar_Girl_Sword_PlayerGirl_Tex_Hair_Lightmap.png
+
+newmtl m11.004
+Ns 4.999998
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 1
+map_Kd Texture/clothes.png
+map_Ke Texture/Avatar_Girl_Sword_PlayerGirl_Tex_Body_Lightmap.png
+
+newmtl m12.004
+Ns 102.500008
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 1
+map_Kd Texture/clothes.png
+map_Ke Texture/Avatar_Girl_Sword_PlayerGirl_Tex_Body_Lightmap.png
+
+newmtl m13.004
+Ns 4.999998
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 1
+map_Kd Texture/clothes.png
+map_Ke Texture/Avatar_Girl_Sword_PlayerGirl_Tex_Body_Lightmap.png
+
+newmtl m14.004
+Ns 4.999998
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 1
+map_Kd Texture/clothes.png
+map_Ke Texture/Avatar_Girl_Sword_PlayerGirl_Tex_Body_Lightmap.png
+
+newmtl m15.004
+Ns 4.999998
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 1
+map_Kd Texture/clothes.png
+map_Ke Texture/Avatar_Girl_Sword_PlayerGirl_Tex_Body_Lightmap.png
+
+newmtl m16.004
+Ns 4.999998
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 1
+map_Kd Texture/clothes.png
+map_Ke Texture/Avatar_Girl_Sword_PlayerGirl_Tex_Body_Lightmap.png
+
+newmtl m17.004
+Ns 4.999998
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 1
+map_Kd Texture/skin.png
+map_Ke Texture/Avatar_Girl_Sword_PlayerGirl_Tex_Body_Lightmap.png
+
+newmtl m18.004
+Ns 102.500008
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 1
+map_Kd Texture/element.png
+
+newmtl m19.004
+Ns 4.999998
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 0.700000
+illum 1
+map_Kd Texture/sp.png
+
+newmtl m2.004
+Ns 4.999998
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 1
+map_Kd Texture/face.png
+map_Ke Texture/Avatar_Girl_Sword_PlayerGirl_Tex_Face_Lightmap.png
+
+newmtl m3.004
+Ns 4.999998
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 1
+map_Kd Texture/face.png
+map_Ke Texture/Avatar_Girl_Sword_PlayerGirl_Tex_Face_Lightmap.png
+
+newmtl m4.004
+Ns 4.999998
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 1
+map_Kd Texture/face.png
+map_Ke Texture/Avatar_Girl_Sword_PlayerGirl_Tex_Face_Lightmap.png
+
+newmtl m5.004
+Ns 4.999998
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 1
+map_Kd Texture/face.png
+map_Ke Texture/Avatar_Girl_Sword_PlayerGirl_Tex_Face_Lightmap.png
+
+newmtl m6.004
+Ns 4.999998
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 1
+map_Kd Texture/face.png
+map_Ke Texture/Avatar_Girl_Sword_PlayerGirl_Tex_Face_Lightmap.png
+
+newmtl m7.004
+Ns 4.999998
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 1
+map_Kd Texture/face.png
+map_Ke Texture/Avatar_Girl_Sword_PlayerGirl_Tex_Face_Lightmap.png
+
+newmtl m8.004
+Ns 4.999998
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 1
+map_Kd Texture/face.png
+map_Ke Texture/Avatar_Girl_Sword_PlayerGirl_Tex_Face_Lightmap.png
+
+newmtl m9.004
+Ns 4.999998
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 1
+map_Kd Texture/hair.png
+map_Ke Texture/Avatar_Girl_Sword_PlayerGirl_Tex_Hair_Lightmap.png

@@ -1,0 +1,676 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="FullSignature">
+  <Class Name="Attribute" Collapsed="true">
+    <Position X="17.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAACAAAAAAAA=</HashCode>
+      <FileName>attributes.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ATR_Transform" Collapsed="true">
+    <Position X="21.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAEAABAIAACAAAAAAA=</HashCode>
+      <FileName>attributes.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ATR_MaterialTexture" Collapsed="true">
+    <Position X="24" Y="1.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAjAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAhAAABACoA=</HashCode>
+      <FileName>attributes.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ATR_MaterialFloat" Collapsed="true">
+    <Position X="26.25" Y="1.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AABAgAAAAAAEAAAAAAAAAAAAAAAAACBAACBAAABAAgA=</HashCode>
+      <FileName>attributes.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ATR_MaterialInt" Collapsed="true">
+    <Position X="28.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABAAAAAAAAAAAAAAAAIAAAAACAAACBAACBAAABAAgA=</HashCode>
+      <FileName>attributes.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ATR_MaterialColor" Collapsed="true">
+    <Position X="30.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABAAAAAAAAAAAAAAAAAAAAAACAAACBAACBQAABAAgA=</HashCode>
+      <FileName>attributes.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ATR_Material" Collapsed="true">
+    <Position X="3.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAgAAAAAAEAAAAAAgAAAAAAAIAAAAABAUBBAAABIAgA=</HashCode>
+      <FileName>attributes.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ATR_MeshRenderer" Collapsed="true">
+    <Position X="6" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAADAAAAECAAAAAAAAABABABAAAQAAgA=</HashCode>
+      <FileName>attributes.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ATR_LightRenderer" Collapsed="true">
+    <Position X="8.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAgAAAAAAAAAAAAAAAABAAgAgBABABAAAAAAgA=</HashCode>
+      <FileName>attributes.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ATR_Light" Collapsed="true">
+    <Position X="12.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQAAAAAAAAAACgAAACAAAAAAAAAAAADAICAAAIAAAAA=</HashCode>
+      <FileName>attributes.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ATR_DirLight" Collapsed="true">
+    <Position X="10.5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAIAAAAAAAAAAAAAABAAABAAAAAACAAAAA=</HashCode>
+      <FileName>attributes.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ATR_PointLight" Collapsed="true">
+    <Position X="12.75" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAABAAAAAABAIgAACCAAAAAAAABAAABAAAAIAKAAAAA=</HashCode>
+      <FileName>attributes.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ATR_SpotLight" Collapsed="true">
+    <Position X="15" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABAAAAAAEBAIgAAACAAAAAAgAAAAABAAAAIAKAAEAA=</HashCode>
+      <FileName>attributes.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ATR_PostProcessNode" Collapsed="true">
+    <Position X="17.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAAAAAAAAAAAAAAAAAAAAAAAAAAAQABAAABAAACAAgA=</HashCode>
+      <FileName>attributes.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ATR_BloomProcessNode" Collapsed="true">
+    <Position X="17.25" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAQAAAAAAAAAAAAAAAAAAAABAAAAAAAAIAAA=</HashCode>
+      <FileName>attributes.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ATR_PostProcessManager" Collapsed="true">
+    <Position X="19.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAIAAAAAAAAAAAAAAABAAAAAAAAQABAAAAAQAAAEAA=</HashCode>
+      <FileName>attributes.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Camera" Collapsed="true">
+    <Position X="25.75" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACEBAAAEAAAIEoEABAAAAAACgAAACAAADQAAAAAAI=</HashCode>
+      <FileName>camera.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EditorContent" Collapsed="true">
+    <Position X="27.5" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>editor_content.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EditorResource&lt;T&gt;" Collapsed="true">
+    <Position X="29.25" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAABAAAAAIAAAAAAAAAAAAAEAAAAAAAAAA=</HashCode>
+      <FileName>editor_resource.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EditorSettings" Collapsed="true">
+    <Position X="31" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAgEAIAAAAIAIAAAAAAAAAAAAAAIAAQA=</HashCode>
+      <FileName>editor_settings.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FileSystem" Collapsed="true">
+    <Position X="5" Y="8.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAAAAAiAAAAAAAAAAAAAABAAAAAAAAIACABAAAAAAAA=</HashCode>
+      <FileName>file_system.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GLine" Collapsed="true">
+    <Position X="36.25" Y="5.75" Width="1.5" />
+    <NestedTypes>
+      <Struct Name="GLine::Line" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>gizmos.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Struct>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAEAAwAAAAAAAgQAAAAAAAAAAAAAAASAAAAAAAAEAAA=</HashCode>
+      <FileName>gizmos.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GCube" Collapsed="true">
+    <Position X="32.75" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAAAAAAgAAAAAAAEBAAAAEAACAAAACvkEAAAA=</HashCode>
+      <FileName>gizmos.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GGrid" Collapsed="true">
+    <Position X="34.5" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAAAAAAAAAAAgAAAAAAAAAAAAAIAAAAAAACAEECAAA=</HashCode>
+      <FileName>gizmos.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="InputInfo" Collapsed="true">
+    <Position X="9.5" Y="8.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQgABAAAAACkAEAAAAAAAAQAAAAACAAAAEAAAEAAAE=</HashCode>
+      <FileName>input_management.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Singleton&lt;T&gt;" Collapsed="true">
+    <Position X="6" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAACAAAAABAAAAAEAAAAgAAAAAAA=</HashCode>
+      <FileName>instance_util.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MaterialSlot&lt;T&gt;" Collapsed="true">
+    <Position X="38" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEgAA=</HashCode>
+      <FileName>material.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MaterialManager" Collapsed="true">
+    <Position X="2.75" Y="8.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAA=</HashCode>
+      <FileName>material.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Material" Collapsed="true">
+    <Position X="6" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEAAAAAACABEAAAAAAgAAAIAACAEAAAAAAFAIEAAAgA=</HashCode>
+      <FileName>material.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ModelMaterial" Collapsed="true">
+    <Position X="2.75" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAgAACEAAAAAAAAAAAAAAAAAEAACAAAAAAAAAAQA=</HashCode>
+      <FileName>material.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PBRMaterial" Collapsed="true">
+    <Position X="5" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAEEAAQACEQAAAAAAQAAAggAAIIFAACAAAQAAAAQAAA=</HashCode>
+      <FileName>material.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="UnlitMaterial" Collapsed="true">
+    <Position X="7.25" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAEAAAACAAAAAAAAAAAAAAAAAAEAAAQAAAAAAAAAQA=</HashCode>
+      <FileName>material.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NPRMaterial" Collapsed="true">
+    <Position X="9.5" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAEAAAACAAAAAAABAAQAAAAAAAEAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>material.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Mesh" Collapsed="true">
+    <Position X="39.75" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAgQgAAAEAAAgAAAAAAAAAAAAAUAAAAAQAAAAAEACA=</HashCode>
+      <FileName>mesh.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MeshRenderer" Collapsed="true">
+    <Position X="41.5" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAgAMAQAAAAAAAAABAEAEAAAAAABAAAA=</HashCode>
+      <FileName>mesh.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Model" Collapsed="true">
+    <Position X="43.25" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQAAQEICCAIUACgAAACAAAAAEEAEAAAaBAgAAAgAAgA=</HashCode>
+      <FileName>model.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PostProcess" Collapsed="true">
+    <Position X="13.75" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>RAAAAACACAAAAAQAAACAAQAABAAEAAAAAAABIEAAAAA=</HashCode>
+      <FileName>postprocess.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BloomProcess" Collapsed="true">
+    <Position X="12.5" Y="9.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AACAAACAAgAAgAQAAAAAAUAQAAAAACAAAAABAAAAAAA=</HashCode>
+      <FileName>postprocess.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SSAOProcess" Collapsed="true">
+    <Position X="14.75" Y="9.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAQAAAAAAAAAQAAAAAAAAAAAAEAACgA=</HashCode>
+      <FileName>postprocess.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PostProcessManager" Collapsed="true">
+    <Position X="7.25" Y="11.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>JBkAAAQAEAAgAAAAAABBAAEABgAIBAAgAACAAAAAgAg=</HashCode>
+      <FileName>postprocess.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="RendererConsole" Collapsed="true">
+    <Position X="7.25" Y="8.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAABBgAAACAAKhQAAAIAAAEAghAAQACAAAACAgQAAAA=</HashCode>
+      <FileName>renderer_console.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="renderer_ui" Collapsed="true">
+    <Position X="46.75" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAEAEAFACgBCAAEAEIAADAgAFAiEQAACqgAAEA=</HashCode>
+      <FileName>renderer_ui.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="IOnWindowSizeChanged" Collapsed="true">
+    <Position X="19.75" Y="11.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAA=</HashCode>
+      <FileName>renderer_window.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="RendererWindow" Collapsed="true">
+    <Position X="48.5" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAIAIAABAAAABCQAIAIAEAGEABGAABAAAQACAAAAAA=</HashCode>
+      <FileName>renderer_window.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="RenderPipeline">
+    <Position X="19.25" Y="12.5" Width="4.5" />
+    <NestedTypes>
+      <Struct Name="RenderPipeline::ShadowMapSetting" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>render_pipeline.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Struct>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AggAAEJBQAAAQKAAAAAQCgACAEIAAQAJChACQAAAAAE=</HashCode>
+      <FileName>render_pipeline.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FrameBufferTexture" Collapsed="true">
+    <Position X="13.75" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACEAAAAAAAAASCUQgAQAAAAAAEAAAAAABAAAAAAAA=</HashCode>
+      <FileName>render_texture.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="RenderTexture" Collapsed="true">
+    <Position X="12.5" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAAAEAAAAAAAAAAAAQAAAAAAAAACAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>render_texture.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BloomRenderBuffer" Collapsed="true">
+    <Position X="12.5" Y="7.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEAAEAAAEAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>render_texture.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DepthTexture" Collapsed="true">
+    <Position X="14.75" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACEAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>render_texture.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Scene" Collapsed="true">
+    <Position X="24" Y="6.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAgAAAAQAAAAgAAACAAAQAAAAAlIAQAAAAAAoAA=</HashCode>
+      <FileName>scene.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SceneObject" Collapsed="true">
+    <Position X="5" Y="10.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAAAgKAAAAAAAEQBAAACAAAAAgAEAAAAAABAAABAAgA=</HashCode>
+      <FileName>scene_object.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SceneModel" Collapsed="true">
+    <Position X="2.75" Y="11.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgIAAAAAAAABAAAAGgQAAAgAAAAAAAAAAIAAIAAA=</HashCode>
+      <FileName>scene_object.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SceneLight" Collapsed="true">
+    <Position X="5" Y="11.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAIgIAAAAAAAAEAAAAAAABAAgBAAAAAAAAAAgAAAAA=</HashCode>
+      <FileName>scene_object.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Shader" Collapsed="true">
+    <Position X="21.5" Y="4.25" Width="5.25" />
+    <TypeIdentifier>
+      <HashCode>QLgBAAAAAABIwBABABoMCAAAAAAEAAAABAAAAABAAAA=</HashCode>
+      <FileName>shader.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Texture2D" Collapsed="true">
+    <Position X="31" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAQAQAQABCAAAEIAAEAAAAAAAAAABgAjA=</HashCode>
+      <FileName>texture.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TClip&lt;TRACK&gt;" Collapsed="true">
+    <Position X="17.5" Y="17.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAAgBIAggAAAwAAAAACAAABAAAEACBAgAAwAQIIABAA=</HashCode>
+      <FileName>clip.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Frame&lt;N&gt;" Collapsed="true">
+    <Position X="10.5" Y="15.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEAAEAAAAAAAAAAAAAAAAAAAgAAEAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>frame.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Pose" Collapsed="true">
+    <Position X="45" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAQAAAACAAgAAAAAgAAQAAAAEEAAAAAEKgAAUAAAA=</HashCode>
+      <FileName>pose.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Skeleton" Collapsed="true">
+    <Position X="29.25" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gEgAAAAAAAAEBAAAAgEAEAAAAAAQAIAAiAAAAAAAAAA=</HashCode>
+      <FileName>skeleton.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TTransformTrack&lt;VTRACK, QTRACK&gt;" Collapsed="true">
+    <Position X="19.5" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAgEIAABAAIIAACAAggAABAAAAACAAAAAAAAAKAAgA=</HashCode>
+      <FileName>transform_track.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Track&lt;T, N&gt;" Collapsed="true">
+    <Position X="27.5" Y="18.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAkAMEAAEAAkAAABIAAAEBAEAEAAAAAIEAAAAEAAAE=</HashCode>
+      <FileName>track.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FastTrack&lt;T, N&gt;" Collapsed="true">
+    <Position X="27.5" Y="20" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gAAAAAAAIAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>track.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Transform" Collapsed="true">
+    <Position X="32.75" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIACEAACAAAQAoAgAAKAIQQCAAEAAggAAACwAoABAcI=</HashCode>
+      <FileName>transform.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Struct Name="MyDocument" Collapsed="true">
+    <Position X="31.5" Y="9.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAACBABMgBQAAAAAgQAAAABAAAAAAAAgAAAAAA=</HashCode>
+      <FileName>imgui_demo.cpp</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="WindowSize" Collapsed="true">
+    <Position X="33.25" Y="10.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAQAQAAAAAAAAAAAAAAAIAAEAAAAAAA=</HashCode>
+      <FileName>editor_settings.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="MaterialTexture2D" Collapsed="true">
+    <Position X="28" Y="9.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AACAAAAAAAAAQAAAAAAAAAAAAAAAAgAAAAAAAAAACAA=</HashCode>
+      <FileName>material.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="MaterialVariables" Collapsed="true">
+    <Position X="29.75" Y="9.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAQAAAAAAAAAACAAAAAAAAAAAAAEAAAAIAAAAEAA=</HashCode>
+      <FileName>material.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="Vertex" Collapsed="true">
+    <Position X="31.5" Y="10.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAACAAAhBAIAAAAAAAAIAAACAAAAAAAAAAA=</HashCode>
+      <FileName>mesh.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="AnimationInstance" Collapsed="true">
+    <Position X="31" Y="8" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAEAAAAIAAAAAAAAAACCAAAAAAAAAAAAAAAAgA=</HashCode>
+      <FileName>model.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="stbrp_context" Collapsed="true">
+    <Position X="36.75" Y="9.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgAAAgAAEACQAQAAAAAAAAQQAAAAAAAAAAgAAAAA=</HashCode>
+      <FileName>imstb_rectpack.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="mat4" Collapsed="true">
+    <Position X="26.25" Y="9.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>mat4.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="quat" Collapsed="true">
+    <Position X="35" Y="9.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAA=</HashCode>
+      <FileName>quat.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="vec3" Collapsed="true">
+    <Position X="29.75" Y="10.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>vec3.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="`anonymous-namespace'::MyItem" Collapsed="true">
+    <Position X="33.25" Y="9.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAACgAAAAAgAAAAAAAAASAAAAAAAAAAAAAgAAAAAA=</HashCode>
+      <FileName>imgui_demo.cpp</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Typedef Name="Clip" Collapsed="true">
+    <Position X="14.5" Y="17.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>clip.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="FastClip" Collapsed="true">
+    <Position X="17.5" Y="19.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>clip.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="ScalarFrame" Collapsed="true">
+    <Position X="7.5" Y="16.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>frame.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="VectorFrame" Collapsed="true">
+    <Position X="13.5" Y="15.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>frame.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="QuaternionFrame" Collapsed="true">
+    <Position X="10.5" Y="17.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>frame.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="BoneMap" Collapsed="true">
+    <Position X="33" Y="17" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>rearrange_bones.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="TransformTrack" Collapsed="true">
+    <Position X="19.5" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>transform_track.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="FastTransformTrack" Collapsed="true">
+    <Position X="19.5" Y="8.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>transform_track.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="ScalarTrack" Collapsed="true">
+    <Position X="27.5" Y="16.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>track.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="VectorTrack" Collapsed="true">
+    <Position X="24.5" Y="18.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>track.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="QuaternionTrack" Collapsed="true">
+    <Position X="30.5" Y="18.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>track.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="FastScalarTrack" Collapsed="true">
+    <Position X="30.5" Y="20" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>track.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="FastVectorTrack" Collapsed="true">
+    <Position X="24.5" Y="20" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>track.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="FastQuaternionTrack" Collapsed="true">
+    <Position X="27.5" Y="22" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>track.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Enum Name="Camera_Movement" Collapsed="true">
+    <Position X="29.75" Y="12" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gAAAAAAAAAAAAgAAAAAAAAAAAAICAAAgAIAAAAAAAAA=</HashCode>
+      <FileName>camera.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="EGBuffer" Collapsed="true">
+    <Position X="33.25" Y="12" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAABIAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>editor_settings.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="E_CULL_FACE" Collapsed="true">
+    <Position X="31.5" Y="12" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAIAAAGAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>material.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="EMaterialType" Collapsed="true">
+    <Position X="35" Y="12" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgAAAAAAAAAAAAAAAIAAIAAAAAAAAAAABAAAAAAA=</HashCode>
+      <FileName>material.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="ETexType" Collapsed="true">
+    <Position X="36.75" Y="12" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAYAAAAAAIAAAAAAAAAAAAIAAAAAAQAAAAAAAAA=</HashCode>
+      <FileName>texture.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="Interpolation" Collapsed="true">
+    <Position X="33" Y="15.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAgAAAAAAAAAEAAAAAAAAAAAAgAAAAAAAAAAAA=</HashCode>
+      <FileName>interpolation.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Microsoft YaHei UI" Size="9" />
+</ClassDiagram>
