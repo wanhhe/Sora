@@ -467,6 +467,8 @@ void renderer_ui::mainUI(RendererWindow *window, Scene* scene)
                         ImGui::Checkbox("Use PostProcess", &EditorSettings::UsePostProcess);
                     }
                     ImGui::DragFloat("shadow distance", &scene->render_pipeline.shadow_map_setting.shadow_distance);
+                    ImGui::DragFloat("skybox width", &scene->render_pipeline.cube_map_setting.cube_map_width);
+                    ImGui::DragFloat("skybox height", &scene->render_pipeline.cube_map_setting.cube_map_height);
 
                     ImGui::SeparatorText("Skybox");
                     ImGui::Checkbox("Use Skybox", &EditorSettings::UseSkybox);
@@ -505,6 +507,7 @@ void renderer_ui::mainUI(RendererWindow *window, Scene* scene)
                                 if (ImGui::Selectable((tex_names[n] + "##" + std::to_string(n)).c_str()))
                                 {
                                     EditorSettings::SkyboxTexture = Texture2D::LoadedTextures[tex_names[n]];
+                                    EditorSettings::NeedUpdateSkybox = true;
                                 }
                                 ImGui::SameLine();
                                 ImGui::Image((GLuint*)Texture2D::LoadedTextures[tex_names[n]]->id, ImVec2(16, 16), uv_min, uv_max);

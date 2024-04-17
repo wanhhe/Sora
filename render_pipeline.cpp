@@ -31,7 +31,7 @@ RenderPipeline::RenderPipeline(RendererWindow* _window) : window(_window)
     fragpos_texture = new RenderTexture(window->Width(), window->Height());
     depth_texture = new DepthTexture(window->Width(), window->Height());
     shadow_map = new DepthTexture(shadow_map_setting.shadow_map_size, shadow_map_setting.shadow_map_size);
-    skybox_cubemap = new SkyboxTexture(window->Width(), window->Height());
+    skybox_cubemap = new SkyboxTexture(cube_map_setting.cube_map_width, cube_map_setting.cube_map_height);
 
     skybox_shader = new Shader(FileSystem::GetContentPath() / "Shader/skybox.vs",
         FileSystem::GetContentPath() / "Shader/skybox.fs", true);
@@ -43,8 +43,8 @@ RenderPipeline::RenderPipeline(RendererWindow* _window) : window(_window)
         FileSystem::GetContentPath() / "Shader/grid.fs", true);
     fragpos_shader = new Shader(FileSystem::GetContentPath() / "Shader/fragpos.vs", 
         FileSystem::GetContentPath() / "Shader/fragpos.fs", true);
-    cubemap_shader = new Shader(FileSystem::GetContentPath() / "Shader/cubetest.vs",
-        FileSystem::GetContentPath() / "Shader/cubetest.fs", true);
+    cubemap_shader = new Shader(FileSystem::GetContentPath() / "Shader/cubemap.vs",
+        FileSystem::GetContentPath() / "Shader/cubemap.fs", true);
 
     skybox_shader->LoadShader();
     depth_shader->LoadShader();
@@ -242,56 +242,13 @@ void RenderPipeline::ProcessNormalPass()
 
 unsigned int cubeVAO = 0;
 unsigned int cubeVBO = 0;
-unsigned int envCubemap = 0;
-unsigned int captureFBO = 0;
-unsigned int captureRBO = 0;
-unsigned int hdrTexture = 0;
-void RenderPipeline::ProcessSkyBox() {
+void RenderPipeline::ProcessCubeMapPass() {
+    delete skybox_cubemap;
+    skybox_cubemap = new SkyboxTexture(cube_map_setting.cube_map_width, cube_map_setting.cube_map_height);
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LEQUAL);
-    glGenFramebuffers(1, &captureFBO);
-    glGenRenderbuffers(1, &captureRBO);
-    glBindFramebuffer(GL_FRAMEBUFFER, captureFBO);
-    glBindRenderbuffer(GL_RENDERBUFFER, captureRBO);
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, 1024, 1024);
-    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, captureRBO);
-    // skybox_cubemap->BindFrameBuffer();
-    // FrameBufferTexture::ClearBufferBinding();
-    glClearColor(1, 0.5, 1, 1);
-
-    stbi_set_flip_vertically_on_load(true);
-    int width, height, nrComponents;
-    float* data = stbi_loadf((FileSystem::GetContentPath() / "Skybox/Newport_Loft/Newport_Loft_8k.jpg").string().c_str(), &width, &height, &nrComponents, 0);
-
-    if (data)
-    {
-        glGenTextures(1, &hdrTexture);
-        glBindTexture(GL_TEXTURE_2D, hdrTexture);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, width, height, 0, GL_RGB, GL_FLOAT, data); // note how we specify the texture's data value to be float
-
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-        stbi_image_free(data);
-    }
-    else
-    {
-        std::cout << "Failed to load HDR image." << std::endl;
-    }
-
-    glGenTextures(1, &envCubemap);
-    glBindTexture(GL_TEXTURE_CUBE_MAP, envCubemap);
-    for (unsigned int i = 0; i < 6; ++i)
-    {
-        glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB16F, 1024, 1024, 0, GL_RGB, GL_FLOAT, nullptr);
-    }
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    skybox_cubemap->BindFrameBuffer();
+    glClearColor(1, 1, 1, 1);
     
     glm::mat4 captureProjection = glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, 10.0f);
     glm::mat4 captureViews[] =
@@ -308,17 +265,13 @@ void RenderPipeline::ProcessSkyBox() {
     cubemap_shader->setInt("equirectangularMap", 0);
     cubemap_shader->setMat4("projection", captureProjection);
     glActiveTexture(GL_TEXTURE0);
-    // glBindTexture(GL_TEXTURE_2D, hdrTexture);
     glBindTexture(GL_TEXTURE_2D, EditorSettings::SkyboxTexture->id);
 
-    glViewport(0, 0, 1024, 1024);
-    // glViewport(0, 0, window->Width(), window->Height());
-    glBindFramebuffer(GL_FRAMEBUFFER, captureFBO);
-    // glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glViewport(0, 0, cube_map_setting.cube_map_width, cube_map_setting.cube_map_height);
     for (unsigned int i = 0; i < 6; i++)
     {
         cubemap_shader->setMat4("view", captureViews[i]);
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, envCubemap, 0);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, skybox_cubemap->environment_cubemap_buffer, 0);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         // renders a 1x1 cube
@@ -391,7 +344,6 @@ void RenderPipeline::ProcessSkyBox() {
     }
 
     FrameBufferTexture::ClearBufferBinding();
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 /*********************
@@ -536,6 +488,7 @@ void RenderPipeline::RenderGizmos()
     }
 
     // Draw a grid
+    if (EditorSettings::UseSkybox) return;
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -554,7 +507,6 @@ void RenderPipeline::RenderGizmos()
 * we need to sort models by distance to camera. 
 * All models is rendered without alpha clip or alpha blend now.
 *****************************************************************/
-bool fl = true;
 void RenderPipeline::Render()
 {
 
@@ -568,52 +520,48 @@ void RenderPipeline::Render()
 
     // Normal Pass
     ProcessNormalPass();
-
     
     // Draw Cubemap Pass
     if (EditorSettings::UseSkybox && EditorSettings::SkyboxTexture != nullptr) {
-        if (fl) {
-            ProcessSkyBox();
-            fl = false;
+        if (EditorSettings::NeedUpdateSkybox) {
+            ProcessCubeMapPass();
+            EditorSettings::NeedUpdateSkybox = false;
         }
         
     }
 
     // Pre Render Setting
-    //if (EditorSettings::UsePostProcess && !EditorSettings::UsePolygonMode && postprocess_manager != nullptr)
-    //{
-    //    postprocess_manager->read_rt->BindFrameBuffer();
-    //}
-    //else
-    //{
-    //    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    //}
+    if (EditorSettings::UsePostProcess && !EditorSettings::UsePolygonMode && postprocess_manager != nullptr)
+    {
+        postprocess_manager->read_rt->BindFrameBuffer();
+    }
+    else
+    {
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    }
 
     // Draw color pass
     ProcessColorPass();
 
     // Draw Gizmos
-    //if (EditorSettings::DrawGizmos)
-    //{
-    //    RenderGizmos();
-    //}
-
-    //// PostProcess
-    //if (EditorSettings::UsePostProcess && !EditorSettings::UsePolygonMode && postprocess_manager != nullptr)
-    //{
-    //    postprocess_manager->ExecutePostProcessList();
-    //}
+    if (EditorSettings::DrawGizmos)
+    {
+        RenderGizmos();
+    }
 
     if (EditorSettings::UseSkybox && EditorSettings::SkyboxTexture != nullptr) {
         RenderSkybox();
+    }
+
+    // PostProcess
+    if (EditorSettings::UsePostProcess && !EditorSettings::UsePolygonMode && postprocess_manager != nullptr)
+    {
+        postprocess_manager->ExecutePostProcessList();
     }
     
 }
 
 void RenderPipeline::RenderSkybox() {
-    // glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-    // glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
     glViewport(0, 0, window->Width(), window->Height());
     Camera* camera = window->render_camera;
     glm::mat4 view = camera->GetViewMatrix();
@@ -623,7 +571,7 @@ void RenderPipeline::RenderSkybox() {
     skybox_shader->setMat4("view", view);
     skybox_shader->setInt("environmentMap", 0);
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_CUBE_MAP, envCubemap);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, skybox_cubemap->environment_cubemap_buffer);
     
     if (cubeVAO == 0)
     {

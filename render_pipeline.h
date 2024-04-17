@@ -31,6 +31,12 @@ public:
         float shadow_distance = 50;
     } shadow_map_setting;
 
+    struct CubeMapSetting
+    {
+        float cube_map_width = 1024;
+        float cube_map_height = 1024;
+    } cube_map_setting;
+
     float *clear_color;
     SceneLight* global_light;
     std::vector<SceneLight*> lights;
@@ -51,7 +57,7 @@ private:
     Shader* fragpos_shader;
     Shader* cubemap_shader;
 
-    void ProcessSkyBox();
+    void ProcessCubeMapPass();
     void ProcessZPrePass();
     void ProcessFragposPass();
     void ProcessShadowPass();

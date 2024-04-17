@@ -35,6 +35,7 @@ public:
     static bool UsePostProcess;
     static bool DrawGizmos;
     static bool UseSkybox;
+    static bool NeedUpdateSkybox;
     static std::vector<WindowSize> window_size_list;
     static std::vector<std::string> GBuffers;
     static EGBuffer CurrentRenderBuffer;
