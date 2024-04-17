@@ -26,14 +26,18 @@ enum EGBuffer
     Depth = 2
 };
 
+class Texture2D;
+
 class EditorSettings
 {
 public:
     static bool UsePolygonMode;
     static bool UsePostProcess;
     static bool DrawGizmos;
+    static bool UseSkybox;
     static std::vector<WindowSize> window_size_list;
     static std::vector<std::string> GBuffers;
     static EGBuffer CurrentRenderBuffer;
+    static Texture2D* SkyboxTexture;
     static bool UsePreviewGBuffer;
 };

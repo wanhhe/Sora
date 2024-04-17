@@ -34,9 +34,9 @@ public:
     EditorResource<Material*>       textureRefs;
 
 public:
-    Texture2D(std::string _path,            ETexType type = ETexType::SRGBA, bool _is_editor = false);
-    Texture2D(const char* _path,            ETexType type = ETexType::SRGBA, bool _is_editor = false);
-    Texture2D(std::filesystem::path _path,  ETexType type = ETexType::SRGBA, bool _is_editor = false);
+    Texture2D(std::string _path, ETexType type = ETexType::SRGBA, bool _is_editor = false);
+    Texture2D(const char* _path,  ETexType type = ETexType::SRGBA, bool _is_editor = false);
+    Texture2D(std::filesystem::path _path, ETexType type = ETexType::SRGBA, bool _is_editor = false);
     ~Texture2D();
     void DeleteTexture2D();
     bool LoadTexture2D(const char *path, ETexType type = ETexType::RGBA);

@@ -62,7 +62,7 @@ void ATR_MaterialTexture::UI_Implement()
     std::string tex_type = "null";
     if (mat_tex->texture != nullptr)
     {
-        const char* types[]= {"RED", "RGB", "RGBA", "SRGB", "SRGBA"};
+        const char* types[]= {"RED", "RGB", "RGBA", "SRGB", "SRGBA", "Skybox"};
         item_name = (*mat_tex->texture)->name;
         tex_type = types[(*mat_tex->texture)->tex_type];
     }

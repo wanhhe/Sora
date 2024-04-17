@@ -2,7 +2,8 @@
 
 bool EditorSettings::UsePostProcess = true;
 bool EditorSettings::UsePolygonMode = false;
-bool EditorSettings::DrawGizmos     = true;
+bool EditorSettings::DrawGizmos = true;
+bool EditorSettings::UseSkybox = false;
 std::vector<WindowSize> EditorSettings::window_size_list = {    WindowSize(800, 600),
                                                                 WindowSize(1024, 768),
                                                                 WindowSize(1200, 900),
@@ -24,3 +25,4 @@ std::vector<WindowSize> EditorSettings::window_size_list = {    WindowSize(800, 
 bool EditorSettings::UsePreviewGBuffer = false;
 std::vector<std::string> EditorSettings::GBuffers = { "Fragpos", "Normal", "Depth" };
 EGBuffer EditorSettings::CurrentRenderBuffer = EGBuffer::Fragpos;
+Texture2D* EditorSettings::SkyboxTexture = nullptr;

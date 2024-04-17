@@ -34,7 +34,6 @@ Model::Model(std::filesystem::path path, bool gamma) : gammaCorrection(gamma)   
     }
     loadModel(scene, path.string().c_str());
     loadSkeleton(scene);
-    std::cout << "has load ske" << std::endl;
     loadAnimation(scene);
 }
 

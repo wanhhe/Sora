@@ -247,7 +247,7 @@ void renderer_ui::ImportShaderPanel(RendererWindow *window)
         {
             std::string vert_path_s = vertex_path;
             std::string frag_path_s = frag_path;
-            Shader *new_shader = new Shader(vert_path_s.c_str(), frag_path_s.c_str());
+            Shader* new_shader = new Shader(vert_path_s.c_str(), frag_path_s.c_str());
             if (!new_shader->LoadShader())
             {
                 info = "Load failed";
@@ -467,6 +467,54 @@ void renderer_ui::mainUI(RendererWindow *window, Scene* scene)
                         ImGui::Checkbox("Use PostProcess", &EditorSettings::UsePostProcess);
                     }
                     ImGui::DragFloat("shadow distance", &scene->render_pipeline.shadow_map_setting.shadow_distance);
+
+                    ImGui::SeparatorText("Skybox");
+                    ImGui::Checkbox("Use Skybox", &EditorSettings::UseSkybox);
+                    if (EditorSettings::UseSkybox) {
+                        std::vector<std::string> tex_names;
+                        auto tmp = Texture2D::LoadedTextures;
+                        for (std::map<string, Texture2D*>::iterator it = tmp.begin(); it != tmp.end(); it++)
+                        {
+                            tex_names.push_back(it->first);
+                        }
+
+                        float width = 32;
+                        float height = 32;
+                        ImVec2 uv_min = ImVec2(0.0f, 0.0f); // Top-left
+                        ImVec2 uv_max = ImVec2(1.0f, 1.0f); // Lower-right
+                        ImVec4 bg_col = ImVec4(0, 0, 0, 0);
+                        ImVec4 tint_col = ImVec4(1, 1, 1, 1);
+                        if (EditorSettings::SkyboxTexture == nullptr) {
+                            if (ImGui::ImageButton("skybox##", (GLuint*)0, ImVec2(width, height), uv_min, uv_max, bg_col, tint_col))
+                            {
+                                ImGui::OpenPopup("popup##skybox");
+                            }
+                        }
+                        else {
+                            if (ImGui::ImageButton("skybox##", (GLuint*)(EditorSettings::SkyboxTexture)->id, ImVec2(width, height), uv_min, uv_max, bg_col, tint_col))
+                            {
+                                ImGui::OpenPopup("popup##skybox");
+                            }
+                        }
+
+                        if (ImGui::BeginPopup("popup##skybox"))
+                        {
+                            for (int n = 0; n < tex_names.size(); n++)
+                            {
+                                // if (ImGui::Selectable("skybox##" + EditorSettings::SkyboxTexture->id))
+                                if (ImGui::Selectable((tex_names[n] + "##" + std::to_string(n)).c_str()))
+                                {
+                                    EditorSettings::SkyboxTexture = Texture2D::LoadedTextures[tex_names[n]];
+                                }
+                                ImGui::SameLine();
+                                ImGui::Image((GLuint*)Texture2D::LoadedTextures[tex_names[n]]->id, ImVec2(16, 16), uv_min, uv_max);
+                            }
+                            ImGui::EndPopup();
+                        }
+
+
+                        
+                    }
                 }
                 ImGui::SeparatorText("Preview GBuffers");
                 {
@@ -788,12 +836,12 @@ void renderer_ui::resourceUI(RendererWindow *window, Scene *scene)
                         ImGui::Text(("ref count:" + std::to_string(tex->textureRefs.references.size())).c_str());
                         ImGui::Text(("path:" + tex->path).c_str());
 
-                        const char* types[]= {"RED", "RGB", "RGBA", "SRGB", "SRGBA"};
+                        const char* types[]= {"RED", "RGB", "RGBA", "SRGB", "SRGBA", "Skybox"};
                         static int type_idx = -1;
                         const char* cur_type = types[tex->tex_type];
                         if (ImGui::BeginCombo("type", cur_type))
                         {
-                            for (int n = 0; n < 5; n++)
+                            for (int n = 0; n < 6; n++)
                             {
                                 if (ImGui::Selectable(types[n], false))
                                 {

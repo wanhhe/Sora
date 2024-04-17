@@ -52,7 +52,7 @@ void Texture2D::DeleteTexture2D()
     glDeleteTextures(1, &id);
 }
 
-bool Texture2D::LoadTexture2D(const char *path, ETexType type)
+bool Texture2D::LoadTexture2D(const char* path, ETexType type)
 {
     int width, height, nrComponents;
     glGenTextures(1, &this->id);
@@ -64,6 +64,12 @@ bool Texture2D::LoadTexture2D(const char *path, ETexType type)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     std::string path_s = path;
     std::replace(path_s.begin(), path_s.end(), '\\', '/');
+    if (type == ETexType::SKYBOX) {
+        stbi_set_flip_vertically_on_load(true);
+    }
+    else {
+        stbi_set_flip_vertically_on_load(false);
+    }
     unsigned char *data = stbi_load(path_s.c_str(), &width, &height, &nrComponents, 0);
     if (data)
     {
@@ -85,6 +91,12 @@ bool Texture2D::LoadTexture2D(const char *path, ETexType type)
                 tex_type = ETexType::SRGB;
                 glTexImage2D(GL_TEXTURE_2D, 0, GL_SRGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
             }
+            else if (type == ETexType::SKYBOX) {
+                tex_type = ETexType::SKYBOX;
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+                glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+            }
             else
             {
                 tex_type = ETexType::RGB;
@@ -98,6 +110,12 @@ bool Texture2D::LoadTexture2D(const char *path, ETexType type)
                 tex_type = ETexType::SRGBA;
                 glTexImage2D(GL_TEXTURE_2D, 0, GL_SRGB_ALPHA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
             }
+            else if (type == ETexType::SKYBOX) {
+                tex_type = ETexType::SKYBOX;
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+                glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+            }
             else
             {
                 tex_type = ETexType::RGBA;
@@ -105,8 +123,6 @@ bool Texture2D::LoadTexture2D(const char *path, ETexType type)
             }
         }
         
-
-
         glGenerateMipmap(GL_TEXTURE_2D);
     }
     else

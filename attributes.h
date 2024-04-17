@@ -118,13 +118,13 @@ public:
 
 private:
     // attributes need to draw:
-    std::vector<ATR_MaterialTexture *>      atr_textures;
-    std::vector<ATR_MaterialInt *>          atr_ints;
-    std::vector<ATR_MaterialFloat *>        atr_floats;
-    std::vector<float *>                    atr_vec3s;
-    std::vector<ATR_MaterialColor *>        atr_colors;
-    int                                     cull_current = 0;
-    static unsigned int                     cur_id;
+    std::vector<ATR_MaterialTexture*> atr_textures;
+    std::vector<ATR_MaterialInt*> atr_ints;
+    std::vector<ATR_MaterialFloat*> atr_floats;
+    std::vector<float*> atr_vec3s;
+    std::vector<ATR_MaterialColor *> atr_colors;
+    int cull_current = 0;
+    static unsigned int cur_id;
 };
 
 // render a mesh's all attributes

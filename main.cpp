@@ -92,6 +92,7 @@ int main()
     Shader* npr_shader = new Shader(FileSystem::GetContentPath() / "Shader/npr.vs",
         FileSystem::GetContentPath() / "Shader/npr1.fs", true);
 
+
     default_shader->LoadShader();
     color_shader->LoadShader();
     tex_shader->LoadShader();

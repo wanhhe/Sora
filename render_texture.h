@@ -14,7 +14,10 @@ public:
     void SetAsRenderTarget();
     void SetAsReadTarget();
     void BindFrameBuffer();
-    static void ClearBufferBinding() { glBindBuffer(GL_FRAMEBUFFER, 0); }
+    static void ClearBufferBinding() { 
+        // ÐÞ¸Ä
+        glBindFramebuffer(GL_FRAMEBUFFER, 0); 
+    }
 
 protected:
     virtual void CreateFrameBuffer(int _width, int _height) = 0;
@@ -48,6 +51,17 @@ class DepthTexture : public FrameBufferTexture
 public:
     DepthTexture(int _width, int _height);
     ~DepthTexture();
+
+private:
+    void CreateFrameBuffer(int _width, int _height) override;
+};
+
+class SkyboxTexture : public RenderTexture
+{
+public:
+    unsigned int environment_cubemap_buffer;
+    SkyboxTexture(int _width, int _height);
+    ~SkyboxTexture();
 
 private:
     void CreateFrameBuffer(int _width, int _height) override;

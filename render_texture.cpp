@@ -124,6 +124,22 @@ BloomRenderBuffer::~BloomRenderBuffer()
     glDeleteFramebuffers(1, &framebuffer);
 }
 
+/*******************************************************************
+* Create a frame buffer and bind DepthTexture.
+********************************************************************/
+void DepthTexture::CreateFrameBuffer(int _width, int _height)
+{
+    // Create frame buffer
+    glGenFramebuffers(1, &framebuffer);
+    glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+
+    // Bind color attatchment
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, color_buffer, 0);
+    glDrawBuffer(GL_NONE);
+    glReadBuffer(GL_NONE);
+    FrameBufferTexture::ClearBufferBinding();
+}
+
 DepthTexture::DepthTexture(int _width, int _height) : FrameBufferTexture(_width, _height)
 {
     glGenTextures(1, &color_buffer);
@@ -149,17 +165,56 @@ DepthTexture::~DepthTexture()
 }
 
 /*******************************************************************
-* Create a frame buffer and bind DepthTexture.
+* Create a frame buffer and bind SkyboxTexture.
 ********************************************************************/
-void DepthTexture::CreateFrameBuffer(int _width, int _height)
+void SkyboxTexture::CreateFrameBuffer(int _width, int _height)
 {
     // Create frame buffer
     glGenFramebuffers(1, &framebuffer);
     glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
 
-    // Bind color attatchment
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, color_buffer, 0);
-    glDrawBuffer(GL_NONE);
-    glReadBuffer(GL_NONE);
+    // Create and bind render buffer object (depth and stencil)
+    glGenRenderbuffers(1, &renderbuffer);
+    glBindRenderbuffer(GL_RENDERBUFFER, renderbuffer);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, 100, 100);
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, renderbuffer);
+
+    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+        RendererConsole::GetInstance()->AddError("[error] FRAMEBUFFER: Framebuffer is not complete!");
+
+    glBindRenderbuffer(GL_RENDERBUFFER, 0);
     FrameBufferTexture::ClearBufferBinding();
 }
+
+SkyboxTexture::SkyboxTexture(int _width, int _height) : RenderTexture(_width, _height)
+{
+    CreateFrameBuffer(_width, _height);
+
+    glGenTextures(1, &environment_cubemap_buffer);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, environment_cubemap_buffer);
+    for (unsigned int i = 0; i < 6; ++i)
+    {
+        // note that we store each face with 16 bit floating point values
+        glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB16F,
+            100, 100, 0, GL_RGB, GL_FLOAT, NULL);
+    }
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    glBindTexture(GL_TEXTURE_2D, 0);
+    
+    RendererConsole::GetInstance()->AddLog("Create Cubemap Buffer: %dx%d", _width, _height);
+}
+
+SkyboxTexture::~SkyboxTexture()
+{
+    RendererConsole::GetInstance()->AddLog("Delete Cubemap Texture");
+    glDeleteTextures(1, &color_buffer);
+    glDeleteRenderbuffers(1, &renderbuffer);
+    glDeleteFramebuffers(1, &framebuffer);
+    glDeleteTextures(1, &environment_cubemap_buffer);
+}
+

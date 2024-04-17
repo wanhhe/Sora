@@ -51,7 +51,7 @@ enum EMaterialType
 	MODEL_MATERIAL,
 	PBR_MATERIAL,
 	Unlit_MATERIAL,
-	NPR_MATERIAL
+	NPR_MATERIAL,
 };
 
 class MaterialManager : public Singleton<MaterialManager>

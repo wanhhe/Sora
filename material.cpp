@@ -173,4 +173,3 @@ NPRMaterial::NPRMaterial() : Material() {
 void NPRMaterial::Setup(std::vector<Texture2D*> default_textures) {
     DefaultSetup(default_textures);
 }
-

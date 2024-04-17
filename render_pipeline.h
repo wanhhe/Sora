@@ -9,6 +9,7 @@ class Camera;
 class Shader;
 class DepthTexture;
 class RenderTexture;
+class SkyboxTexture;
 class RendererWindow;
 class PostProcessManager;
 
@@ -38,20 +39,25 @@ public:
     static RenderTexture* fragpos_texture;
     static DepthTexture* depth_texture;
     static DepthTexture* shadow_map;
+    static SkyboxTexture* skybox_cubemap;
 
 private:
     std::map<unsigned int, SceneModel *> ModelQueueForRender;
     RendererWindow *window;
+    Shader* skybox_shader;
     Shader* depth_shader;
     Shader* grid_shader;
     Shader* normal_shader;
     Shader* fragpos_shader;
+    Shader* cubemap_shader;
 
-    void ProcessZPrePass        ();
-    void ProcessFragposPass     ();
-    void ProcessShadowPass      ();
-    void ProcessNormalPass      ();
-    void ProcessColorPass       ();
-    void RenderGizmos           ();
+    void ProcessSkyBox();
+    void ProcessZPrePass();
+    void ProcessFragposPass();
+    void ProcessShadowPass();
+    void ProcessNormalPass();
+    void ProcessColorPass();
+    void RenderGizmos();
+    void RenderSkybox();
 
 };
