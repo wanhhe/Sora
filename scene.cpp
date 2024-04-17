@@ -21,6 +21,11 @@ void Scene::RegisterGlobalLight( SceneLight *light)
     render_pipeline.global_light = light;
 }
 
+void Scene::RegisterOtherLight(SceneLight* light) {
+    RegisterSceneObject(light);
+    render_pipeline.lights.push_back(light);
+}
+
 void Scene::InstanceFromModel(Model *model, std::string name)
 {
     SceneModel *scene_model = new SceneModel(model, name);

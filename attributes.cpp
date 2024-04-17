@@ -330,7 +330,7 @@ void ATR_Light::UI_Implement()
     ImGui::ColorEdit3("Light Color", color);
 }
 
-ATR_DirLight::ATR_DirLight(float* _color) : ATR_Light(_color) {}
+ATR_DirLight::ATR_DirLight(float* _color) : ATR_Light(_color) { light_type = 0; }
 
 void ATR_DirLight::UI_Implement() {
     ATR_Light::UI_Implement();
@@ -345,12 +345,11 @@ ATR_SpotLight* ATR_DirLight::TransformSpotLight() {
 }
 
 ATR_PointLight::ATR_PointLight(float* _color) : ATR_Light(_color) {
-    constant = 1.0f;
-    linear = 0.7f;
-    quadratic = 1.8f;
+    light_type = 1;
 }
 
 ATR_PointLight::ATR_PointLight(float* _color, float _constant, float _linear, float _quadratic): ATR_Light(_color) {
+    light_type = 1;
     constant = _constant;
     linear = _linear;
     quadratic = _quadratic;
@@ -359,9 +358,9 @@ ATR_PointLight::ATR_PointLight(float* _color, float _constant, float _linear, fl
 void ATR_PointLight::UI_Implement() {
     ATR_Light::UI_Implement();
     ImGui::SeparatorText("Parameters");
-    ImGui::SliderFloat("Constant", &constant, 1.0f, 5.0f);
-    ImGui::SliderFloat("Linear", &linear, 0.045f, 5.0f);
-    ImGui::SliderFloat("Quadratic", &quadratic, 0.0075f, 5.0f);
+    ImGui::DragFloat("Constant", &constant, 0.05f, 1.0f, 3.0f);
+    ImGui::DragFloat("Linear", &linear, 0.001f, 0.045f, 3.0f);
+    ImGui::DragFloat("Quadratic", &quadratic, 0.001f, 0.0075f, 3.0f);
 }
 
 ATR_DirLight* ATR_PointLight::TransformDirLight() {
@@ -373,17 +372,14 @@ ATR_SpotLight* ATR_PointLight::TransformSpotLight() {
 }
 
 ATR_SpotLight::ATR_SpotLight(float* _color) : ATR_Light(_color) {
-    cutOff = glm::cos(glm::radians(12.5f));
-    outerCutOff = 0.0f;
-
-    constant = 1.0f;
-    linear = 0.7f;
-    quadratic = 1.8f;
+    light_type = 2;
 }
 
 ATR_SpotLight::ATR_SpotLight(float* _color, float _constant, float _linear, float _quadratic) : ATR_Light(_color) {
+    light_type = 2;
+
     cutOff = glm::cos(glm::radians(12.5f));
-    outerCutOff = 0.0f;
+    outerCutOff = glm::cos(glm::radians(20.5f));
 
     constant = _constant;
     linear = _linear;
@@ -401,11 +397,16 @@ ATR_PointLight* ATR_SpotLight::TransformPointLight() {
 void ATR_SpotLight::UI_Implement() {
     ATR_Light::UI_Implement();
     ImGui::SeparatorText("Parameters");
-    ImGui::SliderFloat("Constant", &constant, 1.0f, 5.0f);
-    ImGui::SliderFloat("Linear", &linear, 0.045f, 5.0f);
-    ImGui::SliderFloat("Quadratic", &quadratic, 0.0075f, 5.0f);
+    ImGui::DragFloat("Constant", &constant, 0.05f, 1.0f, 3.0f);
+    ImGui::DragFloat("Linear", &linear, 0.001f, 0.045f, 3.0f);
+    ImGui::DragFloat("Quadratic", &quadratic, 0.001f, 0.0075f, 3.0f);
 
-    ImGui::SliderFloat("CutOff", &cutOff, 0.0f, 360.0f);
+    static int spot_light_cutoff_angle = glm::degrees(glm::acos(cutOff));
+    static int spot_light_outercutoff_angle = glm::degrees(glm::acos(outerCutOff));
+    ImGui::DragInt("CutOff", &spot_light_cutoff_angle, 1.0f, 0.0f, spot_light_outercutoff_angle);
+    cutOff = glm::cos(glm::radians((float)spot_light_cutoff_angle));
+    ImGui::DragInt("OuterCutOff", &spot_light_outercutoff_angle, 1.0f, spot_light_cutoff_angle, 90.0f);
+    outerCutOff = glm::cos(glm::radians((float)spot_light_outercutoff_angle));
 }
 
 

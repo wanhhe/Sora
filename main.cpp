@@ -39,11 +39,11 @@ int main()
 
     // Load Resources
     // ------------------------------------------------------------------------------------------------------------------------------
-    Texture2D* normalTex    = new Texture2D(FileSystem::FileSystem::GetContentPath() / "Textures/normal.png", ETexType::RGBA, true);
-    Texture2D* wallTex      = new Texture2D(FileSystem::FileSystem::GetContentPath() / "Textures/wall.jpg");
-    Texture2D* whiteTex     = new Texture2D(FileSystem::FileSystem::GetContentPath() / "Textures/white.png", ETexType::SRGBA, true);
-    Texture2D* folder_ico   = new Texture2D(FileSystem::FileSystem::GetEditorPath() / "ico/folder_ico.png", ETexType::SRGBA, true);
-    Texture2D* file_ico     = new Texture2D(FileSystem::FileSystem::GetEditorPath() / "ico/file_ico.png", ETexType::SRGBA, true);
+    Texture2D* normalTex = new Texture2D(FileSystem::FileSystem::GetContentPath() / "Textures/normal.png", ETexType::RGBA, true);
+    Texture2D* wallTex = new Texture2D(FileSystem::FileSystem::GetContentPath() / "Textures/wall.jpg");
+    Texture2D* whiteTex = new Texture2D(FileSystem::FileSystem::GetContentPath() / "Textures/white.png", ETexType::SRGBA, true);
+    Texture2D* folder_ico = new Texture2D(FileSystem::FileSystem::GetEditorPath() / "ico/folder_ico.png", ETexType::SRGBA, true);
+    Texture2D* file_ico = new Texture2D(FileSystem::FileSystem::GetEditorPath() / "ico/file_ico.png", ETexType::SRGBA, true);
     EditorContent::editor_tex.insert({"default_normal_map", normalTex});
     EditorContent::editor_tex.insert({"folder_ico", folder_ico});
     EditorContent::editor_tex.insert({"file_ico", file_ico});

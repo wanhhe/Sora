@@ -52,6 +52,8 @@ RenderPipeline::RenderPipeline(RendererWindow* _window) : window(_window)
     grid_shader->LoadShader();
     fragpos_shader->LoadShader();
     cubemap_shader->LoadShader();
+
+    lights.clear();
 }
 
 RenderPipeline::~RenderPipeline()
@@ -412,6 +414,38 @@ void RenderPipeline::ProcessColorPass()
             shader->setVec3("viewPos", camera->Position);
             shader->setMat4("light_view", light_view);
             shader->setMat4("light_projection", light_projection);
+            shader->setInt("numPointLights", GetPointLightNum());
+            shader->setInt("numSpotLights", GetSpotLightNum());
+
+            unsigned int point_light_id = 0;
+            unsigned int spot_light_id = 0;
+            for (int i = 0; i < lights.size(); i++)
+            {
+                SceneLight* light = lights[i];
+                if (light->atr_lightRenderer->GetType() == 1) {
+                    std::string uniformName = "pointLights[" + std::to_string(point_light_id) + "]";
+                    shader->setVec3(uniformName + ".position", light->atr_transform->transform->Position());
+                    shader->setFloat(uniformName + ".constant", light->atr_lightRenderer->GetConstant());
+                    shader->setFloat(uniformName + ".linear", light->atr_lightRenderer->GetLinear());
+                    shader->setFloat(uniformName + ".quadratic", light->atr_lightRenderer->GetQuadratic());
+                    shader->setVec3(uniformName + ".color", light->GetLightColor());
+
+                    point_light_id++;
+                }
+                else if (lights[i]->atr_lightRenderer->GetType() == 2) {
+                    std::string uniformName = "spotLights[" + std::to_string(spot_light_id) + "]";
+                    shader->setVec3(uniformName + ".position", light->atr_transform->transform->Position());
+                    shader->setVec3(uniformName + ".direction", light->atr_transform->transform->GetFront());
+                    shader->setFloat(uniformName + ".constant", light->atr_lightRenderer->GetConstant());
+                    shader->setFloat(uniformName + ".linear", light->atr_lightRenderer->GetLinear());
+                    shader->setFloat(uniformName + ".quadratic", light->atr_lightRenderer->GetQuadratic());
+                    shader->setVec3(uniformName + ".color", light->GetLightColor());
+                    shader->setFloat(uniformName + ".cutOff", light->atr_lightRenderer->GetCutOff());
+                    shader->setFloat(uniformName + ".outerCutOff", light->atr_lightRenderer->GetOuterCutOff());
+
+                    spot_light_id++;
+                }
+            }
 
             glActiveTexture(GL_TEXTURE0);
             glUniform1i(glGetUniformLocation(shader->ID, "shadowMap"), 0);
@@ -486,10 +520,25 @@ void RenderPipeline::RenderGizmos()
         front.color = global_light->GetLightColor();
         front.DrawInGlobal();
     }
+    for (int i = 0; i < lights.size(); i++) {
+        if (lights[i]->is_selected) {
+            float r = 0.2;
+            GCube light_cube(0.2);
+            light_cube.color = lights[i]->GetLightColor();
+            light_cube.transform = *lights[i]->atr_transform->transform;
+            light_cube.Draw();
+
+            // GLine front(glm::vec3(0), glm::vec3(0,0,2));
+            GLine front(light_cube.transform.Position(), (light_cube.transform.Position() + glm::vec3(2) * light_cube.transform.GetFront()));
+            front.color = lights[i]->GetLightColor();
+            front.DrawInGlobal();
+        }
+    }
+ 
+    glEnable(GL_DEPTH_TEST);
 
     // Draw a grid
-    if (EditorSettings::UseSkybox) return;
-    glEnable(GL_DEPTH_TEST);
+    if (EditorSettings::UseSkybox && EditorSettings::SkyboxTexture != nullptr) return;
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     GGrid grid;
@@ -639,4 +688,26 @@ void RenderPipeline::RenderSkybox() {
     glBindVertexArray(cubeVAO);
     glDrawArrays(GL_TRIANGLES, 0, 36);
     glBindVertexArray(0);
+}
+
+int RenderPipeline::GetPointLightNum() {
+    int result = 0;
+    for (int i = 0; i < lights.size(); i++) {
+        // 0是dir，1是point，2是spot
+        if (lights[i]->atr_lightRenderer->GetType() == 1) {
+            result++;
+        }
+    }
+    return result;
+}
+
+int RenderPipeline::GetSpotLightNum() {
+    int result = 0;
+    for (int i = 0; i < lights.size(); i++) {
+        // 0是dir，1是point，2是spot
+        if (lights[i]->atr_lightRenderer->GetType() == 2) {
+            result++;
+        }
+    }
+    return result;
 }

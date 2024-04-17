@@ -15,10 +15,11 @@ public:
     RenderPipeline              render_pipeline;
 
 public:
-    Scene(RendererWindow *window);
+    Scene(RendererWindow* window);
     ~Scene();
-    void RegisterSceneObject(SceneObject *object);
-    void RegisterGlobalLight(SceneLight *light);
+    void RegisterSceneObject(SceneObject* object);
+    void RegisterGlobalLight(SceneLight* light);
+    void RegisterOtherLight(SceneLight* light);
     void InstanceFromModel(Model *model, std::string name);
     void RemoveSceneObjectAtIndex(int index);
     void RenderScene();

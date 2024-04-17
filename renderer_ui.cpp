@@ -550,6 +550,15 @@ void renderer_ui::mainUI(RendererWindow *window, Scene* scene)
                 ImGui::Checkbox("Console", &showConsole);
                 ImGui::EndMenu();
             }
+            if (ImGui::BeginMenu("Object"))
+            {
+                if (ImGui::MenuItem("Light"))
+                {
+                    scene->RegisterOtherLight(new SceneLight("Light", true));
+                }
+
+                ImGui::EndMenu();
+            }
             ImGui::EndMenuBar();
         }
 

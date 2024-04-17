@@ -39,11 +39,11 @@ struct MaterialTexture2D
 
 struct MaterialVariables
 {
-	std::vector<MaterialSlot<MaterialTexture2D>*> 	allTextures;
-	std::vector<MaterialSlot<int*>*> 			allInt;
-	std::vector<MaterialSlot<float*>*> 			allFloat;
-	std::vector<MaterialSlot<float*>*> 			allVec3;
-	std::vector<MaterialSlot<float*>*> 			allColor;
+	std::vector<MaterialSlot<MaterialTexture2D>*> allTextures;
+	std::vector<MaterialSlot<int*>*> allInt;
+	std::vector<MaterialSlot<float*>*> allFloat;
+	std::vector<MaterialSlot<float*>*> allVec3;
+	std::vector<MaterialSlot<float*>*> allColor;
 };
 
 enum EMaterialType
@@ -109,9 +109,7 @@ public:
 	Texture2D* ao_map = EditorContent::editor_tex["default_tex"];
 	Texture2D* roughness_map = EditorContent::editor_tex["default_tex"];
 	Texture2D* metal_map = EditorContent::editor_tex["default_tex"];
-    Texture2D* spec_map = EditorContent::editor_tex["default_tex"];
 	float color[3] = { 1, 1, 1 };
-	float specular_color[3] = { 1, 1, 1 };
 	float normal_strength = 1;
     float ao_strength = 1;
     float roughness_strength = 1;

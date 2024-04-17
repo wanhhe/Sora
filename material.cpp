@@ -125,17 +125,15 @@ PBRMaterial::PBRMaterial() : Material::Material()
     ao_map->textureRefs.AddRef(this);
     roughness_map->textureRefs.AddRef(this);
     metal_map->textureRefs.AddRef(this);
-    spec_map->textureRefs.AddRef(this);
 
     material_variables.allTextures.push_back(new MaterialSlot<MaterialTexture2D>("albedo_map", MaterialTexture2D(&albedo_map)));
     material_variables.allTextures.push_back(new MaterialSlot<MaterialTexture2D>("normal_map", MaterialTexture2D(&normal_map)));
     material_variables.allTextures.push_back(new MaterialSlot<MaterialTexture2D>("ao_map", MaterialTexture2D(&ao_map)));
     material_variables.allTextures.push_back(new MaterialSlot<MaterialTexture2D>("roughness_map", MaterialTexture2D(&roughness_map)));
     material_variables.allTextures.push_back(new MaterialSlot<MaterialTexture2D>("metal_map", MaterialTexture2D(&metal_map)));
-    material_variables.allTextures.push_back(new MaterialSlot<MaterialTexture2D>("spec_map", MaterialTexture2D(&spec_map)));
 
     material_variables.allColor.push_back(new MaterialSlot<float *>("color", color));
-    material_variables.allColor.push_back(new MaterialSlot<float *>("specularColor", specular_color));
+
     material_variables.allFloat.push_back(new MaterialSlot<float *>("normalStrength", &normal_strength));
     material_variables.allFloat.push_back(new MaterialSlot<float *>("aoStrength", &ao_strength));
     material_variables.allFloat.push_back(new MaterialSlot<float *>("roughnessStrength", &roughness_strength));

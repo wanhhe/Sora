@@ -66,4 +66,6 @@ private:
     void RenderGizmos();
     void RenderSkybox();
 
+    int GetPointLightNum();
+    int GetSpotLightNum();
 };

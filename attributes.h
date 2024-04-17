@@ -146,23 +146,6 @@ private:
     static unsigned int cur_id;
 };
 
-class ATR_Light;
-
-class ATR_LightRenderer : public Attribute {
-public:
-    ATR_LightRenderer(float* _color);
-    void UI_Implement() override;
-    ~ATR_LightRenderer() override = default;
-
-    unsigned int id;
-
-private:
-    ATR_Light* atr_light;
-    int prev_light = 0; // 之前的灯光
-    int cur_light = 0; // 现在的灯光
-    static unsigned int cur_id;
-};
-
 class ATR_Light : Attribute
 {
 public:
@@ -170,8 +153,11 @@ public:
     void UI_Implement() override;
     ~ATR_Light() override = default;
     virtual float GetConstant() { return 1; };
-    virtual float GetLinear() { return 0.7; };
-    virtual float GetQuadratic() { return 1.8; };
+    virtual float GetLinear() { return 0.09; };
+    virtual float GetQuadratic() { return 0.032; };
+    virtual float GetCutOff() { return glm::cos(glm::radians(12.5f)); }
+    virtual float GetOuterCutOff() { return glm::cos(glm::radians(20.5f));
+    }
 
     int light_type = 0; // 0是dir，1是point，2是spot
     float drag_speed = 0.1;
@@ -205,9 +191,9 @@ public:
     float GetLinear() override { return linear; }
     float GetQuadratic() override { return quadratic; }
 
-    float constant;
-    float linear;
-    float quadratic;
+    float constant = 1.0f;
+    float linear = 0.09f;
+    float quadratic = 0.032f;
 };
 
 class ATR_SpotLight: public ATR_Light {
@@ -222,13 +208,36 @@ public:
     float GetConstant() override { return constant; }
     float GetLinear() override { return linear; }
     float GetQuadratic() override { return quadratic; }
+    float GetCutOff() override { return cutOff; }
+    float GetOuterCutOff() override { return outerCutOff; }
 
-    float cutOff;
-    float outerCutOff;
+    float cutOff = glm::cos(glm::radians(12.5f));
+    float outerCutOff = glm::cos(glm::radians(20.5f));
 
-    float constant;
-    float linear;
-    float quadratic;
+    float constant = 1.0f;
+    float linear = 0.09f;
+    float quadratic = 0.032f;
+};
+
+class ATR_LightRenderer : public Attribute {
+public:
+    ATR_LightRenderer(float* _color);
+    void UI_Implement() override;
+    ~ATR_LightRenderer() override = default;
+    int GetType() { return atr_light->light_type; }
+    float GetConstant() { return atr_light->GetConstant(); };
+    float GetLinear() { return atr_light->GetLinear(); };
+    float GetQuadratic() { return atr_light->GetQuadratic(); };
+    float GetCutOff() { return atr_light->GetCutOff(); };
+    float GetOuterCutOff() { return atr_light->GetOuterCutOff(); }
+
+    unsigned int id;
+
+private:
+    ATR_Light* atr_light;
+    int prev_light = 0; // 之前的灯光
+    int cur_light = 0; // 现在的灯光
+    static unsigned int cur_id;
 };
 
 class PostProcess;

@@ -19,7 +19,6 @@ out VS_OUT{
     mat4 ViewMat;
 } vs_out;
 
-
 uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
