@@ -5,6 +5,7 @@ bool EditorSettings::UsePolygonMode = false;
 bool EditorSettings::DrawGizmos = true;
 bool EditorSettings::UseSkybox = false;
 bool EditorSettings::NeedUpdateSkybox = false;
+bool EditorSettings::UseIBL = false;
 std::vector<WindowSize> EditorSettings::window_size_list = {    WindowSize(800, 600),
                                                                 WindowSize(1024, 768),
                                                                 WindowSize(1200, 900),

@@ -10,6 +10,7 @@ class Shader;
 class DepthTexture;
 class RenderTexture;
 class SkyboxTexture;
+class IrradianceTexture;
 class RendererWindow;
 class PostProcessManager;
 
@@ -31,11 +32,17 @@ public:
         float shadow_distance = 50;
     } shadow_map_setting;
 
-    struct CubeMapSetting
+    struct SkyboxCubeMapSetting
     {
-        float cube_map_width = 1024;
-        float cube_map_height = 1024;
-    } cube_map_setting;
+        float skybox_cube_map_width = 2048;
+        float skybox_cube_map_height = 2048;
+    } skybox_cube_map_setting;
+
+    struct IrradianceCubeMapSetting
+    {
+        float irradiance_cube_map_width = 64;
+        float irraidance_cube_map_height = 64;
+    } irradiance_cube_map_setting;
 
     float *clear_color;
     SceneLight* global_light;
@@ -46,6 +53,7 @@ public:
     static DepthTexture* depth_texture;
     static DepthTexture* shadow_map;
     static SkyboxTexture* skybox_cubemap;
+    static IrradianceTexture* irradiance_cubemap;
 
 private:
     std::map<unsigned int, SceneModel *> ModelQueueForRender;
@@ -56,16 +64,32 @@ private:
     Shader* normal_shader;
     Shader* fragpos_shader;
     Shader* cubemap_shader;
+    Shader* irradiance_convolution_shader;
 
     void ProcessCubeMapPass();
+    void ProcessIrradianceCubemap();
     void ProcessZPrePass();
     void ProcessFragposPass();
     void ProcessShadowPass();
     void ProcessNormalPass();
     void ProcessColorPass();
+    // void ProcessPrfilterPass();
     void RenderGizmos();
     void RenderSkybox();
+    void RenderCube();
 
     int GetPointLightNum();
     int GetSpotLightNum();
+    unsigned int cubeVAO = 0;
+    unsigned int cubeVBO = 0;
+    glm::mat4 captureProjection = glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, 10.0f);
+    glm::mat4 captureViews[6] =
+    {
+        glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f,  0.0f,  0.0f), glm::vec3(0.0f, -1.0f,  0.0f)),
+        glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(-1.0f,  0.0f,  0.0f), glm::vec3(0.0f, -1.0f,  0.0f)),
+        glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f,  1.0f,  0.0f), glm::vec3(0.0f,  0.0f,  1.0f)),
+        glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f,  0.0f), glm::vec3(0.0f,  0.0f, -1.0f)),
+        glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f,  0.0f,  1.0f), glm::vec3(0.0f, -1.0f,  0.0f)),
+        glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f,  0.0f, -1.0f), glm::vec3(0.0f, -1.0f,  0.0f))
+    };
 };

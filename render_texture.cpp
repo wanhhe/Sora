@@ -204,6 +204,8 @@ SkyboxTexture::SkyboxTexture(int _width, int _height) : RenderTexture(_width, _h
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
     glBindTexture(GL_TEXTURE_2D, 0);
+
+    std::cout << framebuffer << std::endl;
     
     RendererConsole::GetInstance()->AddLog("Create Cubemap Buffer: %dx%d", _width, _height);
 }
@@ -217,3 +219,40 @@ SkyboxTexture::~SkyboxTexture()
     glDeleteTextures(1, &environment_cubemap_buffer);
 }
 
+/*******************************************************************
+* Create a frame buffer and bind irradianceTexture.
+********************************************************************/
+IrradianceTexture::IrradianceTexture(int _width, int _height, unsigned int _framebuffer, unsigned int _renderbuffer): width(_width), height(_height), framebuffer(_framebuffer), renderbuffer(_renderbuffer)
+{
+    glGenTextures(1, &irradiance_cubemap_buffer);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, irradiance_cubemap_buffer);
+    for (unsigned int i = 0; i < 6; ++i)
+    {
+        // note that we store each face with 16 bit floating point values
+        glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB16F, width, height, 0, GL_RGB, GL_FLOAT, nullptr);
+    }
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+
+    glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+    glBindRenderbuffer(GL_RENDERBUFFER, renderbuffer);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, width, height);
+
+    glBindRenderbuffer(GL_RENDERBUFFER, 0);
+    FrameBufferTexture::ClearBufferBinding();
+    RendererConsole::GetInstance()->AddLog("Create Irradiance Buffer: %dx%d", width, height);
+}
+
+IrradianceTexture::~IrradianceTexture()
+{
+    RendererConsole::GetInstance()->AddLog("Delete Irradiance Texture");
+    glBindRenderbuffer(GL_RENDERBUFFER, 0);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glDeleteTextures(1, &irradiance_cubemap_buffer);
+}

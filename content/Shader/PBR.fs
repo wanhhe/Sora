@@ -60,6 +60,7 @@ uniform int numPointLights;
 uniform int numSpotLights;
 
 uniform sampler2D shadowMap;
+uniform samplerCube irradianceMap;
 uniform Texture2D albedo_map;
 uniform Texture2D normal_map;
 uniform Texture2D metal_map;
@@ -72,6 +73,7 @@ uniform float aoStrength;
 uniform float roughnessStrength;
 uniform float metalStrength;
 uniform float shadowStrength;
+uniform bool useIBL;
 
 float near = 0.1; 
 float far  = 100.0;
@@ -185,7 +187,19 @@ PBRLightingInfo CalculatePBRLighting(vec3 n, vec3 albedo, float m, float r, vec3
 
     PBRLightingInfo pbr;
     pbr.Lo = Lo;
-    pbr.ambient = ambient * albedo * ao;
+    if (useIBL) {
+        // ambient lighting (we now use IBL as the ambient term)
+        vec3 kS = fresnelSchlick(max(dot(n, v), 0.0), F0);
+        vec3 kD = saturate(1 - kS) * (1 - m);
+        vec3 irradiance = texture(irradianceMap, n).rgb;
+        vec3 diffuse = irradiance * albedo;
+        // vec3 diffuse = albedo;
+        pbr.ambient = kD * diffuse * ao;
+    } else {
+        pbr.ambient = ambient * albedo * ao;
+        
+    }
+
     return pbr;
 }
 
@@ -239,17 +253,17 @@ void main()
     vec4 roughness = SampleTexture(roughness_map, fs_in.TexCoords) * roughnessStrength;
     vec3 normalWS = SampleTexture(normal_map, fs_in.TexCoords).rgb;
 
-    vec3 halfNormalWS = normalize(normalWS * 2.0 - 1.0);
-    halfNormalWS.xy *= normalStrength;
+    normalWS = normalize(normalWS * 2.0 - 1.0);
+    normalWS.xy *= normalStrength;
     mat3 TBN = mat3(fs_in.T, fs_in.B, fs_in.N);
-    halfNormalWS = normalize(TBN * halfNormalWS);
+    normalWS = normalize(TBN * normalWS);
     float ambientStrength = 0.2;
     vec3 ambient = ambientStrength * fs_in.LightColor * albedo.xyz;
     vec3 lightDir = normalize(-fs_in.LightDir);
-    float NdotL = max(dot(halfNormalWS, lightDir), 0.0);
+    float NdotL = max(dot(normalWS, lightDir), 0.0);
 
     PBRLightingInfo PBR = CalculatePBRLighting(normalWS, color * albedo.xyz, metallic.x, roughness.x, ambient, ao.x);
-    float shadow = ShadowCalculation(fs_in.FragPosLightSpace, halfNormalWS, lightDir);
+    float shadow = ShadowCalculation(fs_in.FragPosLightSpace, normalWS, lightDir);
     vec3 midres = GetPBRLightingResult(PBR, NdotL, shadow);
     FragColor = vec4(midres.rgb, 1.0);
     // FragColor = vec4(PBR.Lo, 1.0);

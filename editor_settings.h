@@ -41,4 +41,5 @@ public:
     static EGBuffer CurrentRenderBuffer;
     static Texture2D* SkyboxTexture;
     static bool UsePreviewGBuffer;
+    static bool UseIBL;
 };

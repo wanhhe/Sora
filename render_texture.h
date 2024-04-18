@@ -28,6 +28,8 @@ class RenderTexture : public FrameBufferTexture
 {
 public:
     RenderTexture(int _width, int _height);
+    unsigned int GetFrameBuffer() { return framebuffer; }
+    unsigned int GetRenderBuffer() { return renderbuffer; }
     virtual ~RenderTexture();
 
 protected:
@@ -65,4 +67,21 @@ public:
 
 private:
     void CreateFrameBuffer(int _width, int _height) override;
+};
+
+class IrradianceTexture
+{
+public:
+    unsigned int irradiance_cubemap_buffer;
+    int width;
+    int height;
+    std::string name;
+    IrradianceTexture(int _width, int _height, unsigned int _framebuffer, unsigned int _renderbuffer);
+    ~IrradianceTexture();
+    unsigned int GetFrameBuffer() { return framebuffer; }
+    unsigned int GetRenderBuffer() { return renderbuffer; }
+
+protected:
+    unsigned int framebuffer = 0;
+    unsigned int renderbuffer = 0;
 };

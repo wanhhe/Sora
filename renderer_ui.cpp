@@ -23,8 +23,9 @@ renderer_ui::~renderer_ui() { }
 
 void renderer_ui::setup(GLFWwindow *window)
 {
-    ImGui::StyleColorsCustom(); // Setup Dear ImGui style
+    // ImGui::StyleColorsCustom(); // Setup Dear ImGui style
     // ImGui::StyleColorsLight();
+    ImGui::StyleColorsDark();
 
     // Setup Platform/Renderer backends
     ImGui_ImplGlfw_InitForOpenGL(window, true);
@@ -467,8 +468,8 @@ void renderer_ui::mainUI(RendererWindow *window, Scene* scene)
                         ImGui::Checkbox("Use PostProcess", &EditorSettings::UsePostProcess);
                     }
                     ImGui::DragFloat("shadow distance", &scene->render_pipeline.shadow_map_setting.shadow_distance);
-                    ImGui::DragFloat("skybox width", &scene->render_pipeline.cube_map_setting.cube_map_width);
-                    ImGui::DragFloat("skybox height", &scene->render_pipeline.cube_map_setting.cube_map_height);
+                    ImGui::DragFloat("skybox width", &scene->render_pipeline.skybox_cube_map_setting.skybox_cube_map_width);
+                    ImGui::DragFloat("skybox height", &scene->render_pipeline.skybox_cube_map_setting.skybox_cube_map_height);
 
                     ImGui::SeparatorText("Skybox");
                     ImGui::Checkbox("Use Skybox", &EditorSettings::UseSkybox);
@@ -513,11 +514,13 @@ void renderer_ui::mainUI(RendererWindow *window, Scene* scene)
                                 ImGui::Image((GLuint*)Texture2D::LoadedTextures[tex_names[n]]->id, ImVec2(16, 16), uv_min, uv_max);
                             }
                             ImGui::EndPopup();
-                        }
+                        }   
 
-
-                        
+                        ImGui::SeparatorText("IBL");
+                        ImGui::Checkbox("Use IBL", &EditorSettings::UseIBL);
                     }
+
+
                 }
                 ImGui::SeparatorText("Preview GBuffers");
                 {
