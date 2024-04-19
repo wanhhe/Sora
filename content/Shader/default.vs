@@ -25,7 +25,6 @@ uniform mat4 projection;
 uniform mat4 light_view;
 uniform mat4 light_projection;
 
-
 uniform vec3 viewPos;
 uniform vec3 lightDir;
 uniform vec3 lightColor;

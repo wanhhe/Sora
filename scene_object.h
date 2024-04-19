@@ -61,5 +61,5 @@ public:
     glm::vec3 GetLightColor();
 
 private:
-    float light_color[3] = {1, 1, 1};
+    float light_color[3] = {0.01, 0.01, 0.01};
 };

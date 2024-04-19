@@ -256,3 +256,61 @@ IrradianceTexture::~IrradianceTexture()
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glDeleteTextures(1, &irradiance_cubemap_buffer);
 }
+
+SignleCubeMapTexture::SignleCubeMapTexture(int _width, int _height): width(_width), height(_height) {
+    glGenTextures(1, &cubemap_buffer);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, cubemap_buffer);
+    for (unsigned int i = 0; i < 6; ++i)
+    {
+        glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB16F, width, height, 0, GL_RGB, GL_FLOAT, nullptr);
+    }
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR); // be sure to set minification filter to mip_linear 
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    // generate mipmaps for the cubemap so OpenGL automatically allocates the required memory.
+    glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
+
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    RendererConsole::GetInstance()->AddLog("Create Prefilter Buffer: %dx%d", width, height);
+}
+
+SignleCubeMapTexture::~SignleCubeMapTexture() {
+    RendererConsole::GetInstance()->AddLog("Delete Prefilter Texture");
+    glDeleteTextures(1, &cubemap_buffer);
+}
+
+OtherFrameBufferAndRenderBufferTexture2D::OtherFrameBufferAndRenderBufferTexture2D(int _width, int _height, unsigned int _framebuffer, unsigned int _renderbuffer) : width(_width), height(_height), framebuffer(_framebuffer), renderbuffer(_renderbuffer)
+{
+    glGenTextures(1, &color_buffer);
+    // pre-allocate enough memory for the LUT texture.
+    glBindTexture(GL_TEXTURE_2D, color_buffer);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RG16F, width, height, 0, GL_RG, GL_FLOAT, 0);
+    // be sure to set wrapping mode to GL_CLAMP_TO_EDGE
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    // then re-configure capture framebuffer object and render screen-space quad with BRDF shader.
+    glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+    glBindRenderbuffer(GL_RENDERBUFFER, renderbuffer);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, width, height);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, color_buffer, 0);
+
+    glBindRenderbuffer(GL_RENDERBUFFER, 0);
+    FrameBufferTexture::ClearBufferBinding();
+    RendererConsole::GetInstance()->AddLog("Create Prefilter Buffer: %dx%d", width, height);
+}
+
+OtherFrameBufferAndRenderBufferTexture2D::~OtherFrameBufferAndRenderBufferTexture2D()
+{
+    RendererConsole::GetInstance()->AddLog("Delete Prefilter Texture");
+    glBindRenderbuffer(GL_RENDERBUFFER, 0);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glDeleteTextures(1, &color_buffer);
+}

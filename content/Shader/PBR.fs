@@ -61,6 +61,8 @@ uniform int numSpotLights;
 
 uniform sampler2D shadowMap;
 uniform samplerCube irradianceMap;
+uniform samplerCube prefilterMap;
+uniform sampler2D brdfLUT;
 uniform Texture2D albedo_map;
 uniform Texture2D normal_map;
 uniform Texture2D metal_map;
@@ -102,22 +104,16 @@ float GGX(float cos, float k)
 
 vec3 fresnelSchlickRoughness(float cosTheta, vec3 F0, float roughness)
 {
-    return F0 + (max(vec3(1.0 - roughness, 1.0 - roughness, 1.0 - roughness), F0) - F0) * pow((1.0 - cosTheta) * 1, 5.0);
+    return F0 + (max(vec3(1.0 - roughness), F0) - F0) * pow(clamp(1.0 - cosTheta, 0.0, 1.0) * 1, 5.0);
 }
 
 vec3 fresnelSchlick(float cosTheta, vec3 F0)
 {
-    return F0 + (1 - F0) * pow((1 - cosTheta), 5.0);
+    return F0 + (1 - F0) * pow(1.0 - cosTheta, 5.0);
 }
 
-PBRLightingInfo CalculatePBRLighting(vec3 n, vec3 albedo, float m, float r, vec3 ambient, float ao)
-{
+vec3 CalculatePointLighting(vec3 n, vec3 v, float r, vec3 F0, float m, vec3 albedo) {
     float PI = 3.1415926;
-    vec3 v = normalize(fs_in.ViewPos - fs_in.FragPos);
-
-    vec3 F0 = vec3(0.04, 0.04, 0.04);
-    F0 = mix(F0, albedo, m);
-
     vec3 Lo = vec3(0.0);
     for (int i = 0; i < numPointLights; i++) {
         vec3 l = normalize(pointLights[i].position - fs_in.FragPos);
@@ -127,9 +123,9 @@ PBRLightingInfo CalculatePBRLighting(vec3 n, vec3 albedo, float m, float r, vec3
                 pointLights[i].quadratic * (distance * distance));
         vec3 radiance = pointLights[i].color * attenuation;
 
-        float NdotH = dot(n, h);
-        float NdotL = dot(n, l);
-        float NdotV = dot(n, v);
+        float NdotH = max(dot(n, h), 0);
+        float NdotL = max(dot(n, l), 0);
+        float NdotV = max(dot(n, v), 0);
 
         // D
         float a = pow(r, 2);
@@ -150,54 +146,110 @@ PBRLightingInfo CalculatePBRLighting(vec3 n, vec3 albedo, float m, float r, vec3
 
         Lo += (Kd * albedo / PI + specular) * radiance * NdotL;
     }
-    for (int i = 0; i < numSpotLights; i++) {
-        vec3 l = normalize(spotLights[i].position - fs_in.FragPos);
-        float theta = dot(l, normalize(-spotLights[i].direction));
-        float epsilon = spotLights[i].cutOff - spotLights[i].outerCutOff;
-        float intensity = clamp((theta - spotLights[i].outerCutOff) / epsilon, 0.0, 1.0);  
-        vec3 h = normalize(l + v);
-        float distance = length(spotLights[i].position - fs_in.FragPos);
-        float attenuation = 1.0 / (spotLights[i].constant + spotLights[i].linear * distance + 
-                spotLights[i].quadratic * (distance * distance));
-        vec3 radiance = spotLights[i].color * attenuation;
+    return Lo;
+}
 
-        float NdotH = dot(n, h);
-        float NdotL = dot(n, l);
-        float NdotV = dot(n, v);
+vec3 CalculateDirLighting(vec3 n, vec3 v, float r, vec3 F0, float m, vec3 albedo) {
+    float PI = 3.1415926;
+    vec3 l = -normalize(fs_in.LightDir);
+    vec3 h = normalize(l + v);
+    vec3 radiance = fs_in.LightColor;
 
-        // D
-        float a = pow(r, 2);
-        float a2 = max(pow(a, 2), 0.000001);
-        float D_n = a2 / (PI * (pow(NdotH, 2) * (a2 - 1) + 1));
+    float NdotH = max(dot(n, h), 0);
+    float NdotL = max(dot(n, l), 0);
+    float NdotV = max(dot(n, v), 0);
 
-        //F
-        vec3 F = fresnelSchlick(max(dot(h, v), 0), F0);
+    // D
+    float a = pow(r, 2);
+    float a2 = max(pow(a, 2), 0.000001);
+    float D_n = a2 / (PI * (pow(NdotH, 2) * (a2 - 1) + 1));
 
-        //G
-        float k = pow((a + 1), 2) / 8;
-        float G = GGX(saturate(NdotL), k) * GGX(saturate(NdotV), k);
+    //F
+    vec3 F = fresnelSchlick(max(dot(h, v), 0), F0);
 
-        vec3 specular = (D_n * F * G) / max((4 * NdotV * NdotL), 0.001);
+    //G
+    float k = pow((a + 1), 2) / 8;
+    float G = GGX(saturate(NdotL), k) * GGX(saturate(NdotV), k);
 
-        vec3 Ks = F;
-        vec3 Kd = saturate(1 - Ks) * (1 - m);
+    vec3 specular = (D_n * F * G) / max((4 * NdotV * NdotL), 0.001);
 
-        Lo += (Kd * albedo / PI + specular) * intensity * NdotL;
-    }
+    vec3 Ks = F;
+    vec3 Kd = saturate(1 - Ks) * (1 - m);
+
+    return (Kd * albedo / PI + specular) * radiance * NdotL;
+}
+
+PBRLightingInfo CalculatePBRLighting(vec3 n, vec3 albedo, float m, float r, vec3 ambient, float ao)
+{
+    float PI = 3.1415926;
+    vec3 v = normalize(fs_in.ViewPos - fs_in.FragPos);
+    vec3 R = reflect(-v, n); 
+
+    vec3 F0 = vec3(0.04);
+    F0 = mix(F0, albedo, m);
+
+    vec3 Lo = vec3(0.0);
+
+    Lo += CalculateDirLighting(n, v, r, F0, m, albedo);
+    Lo += CalculatePointLighting(n, v, r, F0, m, albedo);
+
+
+    // for (int i = 0; i < numSpotLights; i++) {
+    //     vec3 l = normalize(spotLights[i].position - fs_in.FragPos);
+    //     float theta = dot(l, normalize(-spotLights[i].direction));
+    //     float epsilon = spotLights[i].cutOff - spotLights[i].outerCutOff;
+    //     float intensity = clamp((theta - spotLights[i].outerCutOff) / epsilon, 0.0, 1.0);  
+    //     vec3 h = normalize(l + v);
+    //     float distance = length(spotLights[i].position - fs_in.FragPos);
+    //     float attenuation = 1.0 / (spotLights[i].constant + spotLights[i].linear * distance + 
+    //             spotLights[i].quadratic * (distance * distance));
+    //     vec3 radiance = spotLights[i].color * attenuation;
+
+    //     float NdotH = dot(n, h);
+    //     float NdotL = dot(n, l);
+    //     float NdotV = dot(n, v);
+
+    //     // D
+    //     float a = pow(r, 2);
+    //     float a2 = max(pow(a, 2), 0.000001);
+    //     float D_n = a2 / (PI * (pow(NdotH, 2) * (a2 - 1) + 1));
+
+    //     //F
+    //     vec3 F = fresnelSchlick(max(dot(h, v), 0), F0);
+
+    //     //G
+    //     float k = pow((a + 1), 2) / 8;
+    //     float G = GGX(saturate(NdotL), k) * GGX(saturate(NdotV), k);
+
+    //     vec3 specular = (D_n * F * G) / max((4 * NdotV * NdotL), 0.001);
+
+    //     vec3 Ks = F;
+    //     vec3 Kd = saturate(1 - Ks) * (1 - m);
+
+    //     Lo += (Kd * albedo / PI + specular) * intensity * NdotL;
+    // }
 
     PBRLightingInfo pbr;
     pbr.Lo = Lo;
     if (useIBL) {
         // ambient lighting (we now use IBL as the ambient term)
-        vec3 kS = fresnelSchlick(max(dot(n, v), 0.0), F0);
+        vec3 F = fresnelSchlickRoughness(max(dot(n, v), 0.0), F0, r);
+
+        vec3 kS = F;
         vec3 kD = saturate(1 - kS) * (1 - m);
+
         vec3 irradiance = texture(irradianceMap, n).rgb;
         vec3 diffuse = irradiance * albedo;
-        // vec3 diffuse = albedo;
-        pbr.ambient = kD * diffuse * ao;
+
+        // sample both the pre-filter map and the BRDF lut and combine them together as per the Split-Sum approximation to get the IBL specular part.
+        const float MAX_REFLECTION_LOD = 1.0;
+        vec3 prefilteredColor = textureLod(prefilterMap, R,  r * MAX_REFLECTION_LOD).rgb;    
+        vec2 brdf = texture(brdfLUT, vec2(max(dot(n, v), 0.0), r)).rg;
+        vec3 specular = prefilteredColor * (F * brdf.x + brdf.y);
+
+        pbr.ambient = (kD * diffuse + specular) * ao;
     } else {
-        pbr.ambient = ambient * albedo * ao;
-        
+        pbr.ambient = ambient; 
     }
 
     return pbr;
@@ -211,7 +263,7 @@ float LinearizeDepth(float depth)
 
 vec3 GetPBRLightingResult(PBRLightingInfo PBR, float NdotL, float shadow)
 {
-    return (PBR.Lo + PBR.ambient) * (1 - shadow) + PBR.ambient * shadow;
+    return  (1 - shadow) * (PBR.Lo + PBR.ambient) / (PBR.Lo + PBR.ambient + vec3(1.0)) + PBR.ambient * shadow;
 }
 
 float ShadowCalculation(vec4 fragPosLightSpace, vec3 normal, vec3 lightDir)
@@ -266,5 +318,4 @@ void main()
     float shadow = ShadowCalculation(fs_in.FragPosLightSpace, normalWS, lightDir);
     vec3 midres = GetPBRLightingResult(PBR, NdotL, shadow);
     FragColor = vec4(midres.rgb, 1.0);
-    // FragColor = vec4(PBR.Lo, 1.0);
 }

@@ -327,7 +327,7 @@ ATR_Light::ATR_Light(float* _color): color(_color) {}
 
 void ATR_Light::UI_Implement()
 {
-    ImGui::ColorEdit3("Light Color", color);
+    ImGui::ColorEdit4("Light Color", color);
 }
 
 ATR_DirLight::ATR_DirLight(float* _color) : ATR_Light(_color) { light_type = 0; }

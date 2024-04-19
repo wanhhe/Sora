@@ -27,8 +27,8 @@ void Material::DefaultSetup(std::vector<Texture2D *> default_textures)
     unsigned int gl_tex_id = 0;
     for (auto tex : material_variables.allTextures)
     {
-        glActiveTexture(GL_TEXTURE2 + gl_tex_id);
-        glUniform1i(glGetUniformLocation(shader->ID, (tex->slot_name + ".texture").c_str()), 2 + gl_tex_id);
+        glActiveTexture(GL_TEXTURE4 + gl_tex_id);
+        glUniform1i(glGetUniformLocation(shader->ID, (tex->slot_name + ".texture").c_str()), 4 + gl_tex_id);
         shader->setVec2((tex->slot_name + ".tilling").c_str(), tex->variable.tilling );
         shader->setVec2((tex->slot_name + ".offset").c_str(), tex->variable.offset );
         glBindTexture(GL_TEXTURE_2D, (*tex->variable.texture)->id);

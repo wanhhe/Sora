@@ -70,6 +70,9 @@ int main()
     Shader* PBR_shader = new Shader(FileSystem::GetContentPath() / "Shader/default.vs", 
         FileSystem::GetContentPath() / "Shader/PBR.fs", true);
 
+    //Shader* PBR_shader = new Shader(FileSystem::GetContentPath() / "Shader/PBR2.vs",
+    //    FileSystem::GetContentPath() / "Shader/PBR2.fs", true);
+
     Shader* gamma_correcting_shader  = new Shader(FileSystem::GetContentPath() / "Shader/framebuffer.vs", 
         FileSystem::GetContentPath() / "Shader/gamma_correcting_frame.fs", true);
 

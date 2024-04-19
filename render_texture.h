@@ -85,3 +85,33 @@ protected:
     unsigned int framebuffer = 0;
     unsigned int renderbuffer = 0;
 };
+
+class OtherFrameBufferAndRenderBufferTexture2D
+{
+public:
+    unsigned int color_buffer;
+    int width;
+    int height;
+    std::string name;
+    OtherFrameBufferAndRenderBufferTexture2D(int _width, int _height, unsigned int _framebuffer, unsigned int _renderbuffer);
+    ~OtherFrameBufferAndRenderBufferTexture2D();
+    unsigned int GetFrameBuffer() { return framebuffer; }
+    unsigned int GetRenderBuffer() { return renderbuffer; }
+
+protected:
+    unsigned int framebuffer = 0;
+    unsigned int renderbuffer = 0;
+};
+
+class SignleCubeMapTexture
+{
+public:
+    unsigned int cubemap_buffer;
+    int width;
+    int height;
+    std::string name;
+    SignleCubeMapTexture(int _width, int _height);
+    ~SignleCubeMapTexture();
+
+protected:
+};

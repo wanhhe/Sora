@@ -11,6 +11,8 @@ class DepthTexture;
 class RenderTexture;
 class SkyboxTexture;
 class IrradianceTexture;
+class SignleCubeMapTexture;
+class OtherFrameBufferAndRenderBufferTexture2D;
 class RendererWindow;
 class PostProcessManager;
 
@@ -44,6 +46,12 @@ public:
         float irraidance_cube_map_height = 64;
     } irradiance_cube_map_setting;
 
+    struct PrefilterCubeMapSetting
+    {
+        float prefilter_cube_map_width = 256;
+        float prefilter_cube_map_height = 256;
+    } prefilter_cube_map_setting;
+
     float *clear_color;
     SceneLight* global_light;
     std::vector<SceneLight*> lights;
@@ -54,6 +62,8 @@ public:
     static DepthTexture* shadow_map;
     static SkyboxTexture* skybox_cubemap;
     static IrradianceTexture* irradiance_cubemap;
+    static SignleCubeMapTexture* prefilter_cubemap;
+    static OtherFrameBufferAndRenderBufferTexture2D* brdf_lut_texture;
 
 private:
     std::map<unsigned int, SceneModel *> ModelQueueForRender;
@@ -65,6 +75,8 @@ private:
     Shader* fragpos_shader;
     Shader* cubemap_shader;
     Shader* irradiance_convolution_shader;
+    Shader* prefilter_shader;
+    Shader* brdf_shader;
 
     void ProcessCubeMapPass();
     void ProcessIrradianceCubemap();
@@ -73,15 +85,18 @@ private:
     void ProcessShadowPass();
     void ProcessNormalPass();
     void ProcessColorPass();
-    // void ProcessPrfilterPass();
+    void ProcessSpecularIBLPass();
     void RenderGizmos();
     void RenderSkybox();
     void RenderCube();
+    void RenderQuad();
 
     int GetPointLightNum();
     int GetSpotLightNum();
     unsigned int cubeVAO = 0;
     unsigned int cubeVBO = 0;
+    unsigned int quadVAO = 0;
+    unsigned int quadVBO;
     glm::mat4 captureProjection = glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, 10.0f);
     glm::mat4 captureViews[6] =
     {

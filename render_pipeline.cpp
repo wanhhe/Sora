@@ -22,6 +22,8 @@ DepthTexture* RenderPipeline::depth_texture;
 DepthTexture* RenderPipeline::shadow_map;
 SkyboxTexture* RenderPipeline::skybox_cubemap;
 IrradianceTexture* RenderPipeline::irradiance_cubemap;
+SignleCubeMapTexture* RenderPipeline::prefilter_cubemap;
+OtherFrameBufferAndRenderBufferTexture2D* RenderPipeline::brdf_lut_texture;
 
 void RenderPipeline::EnqueueRenderQueue(SceneModel *model) { ModelQueueForRender.insert({model->id, model});   }
 void RenderPipeline::RemoveFromRenderQueue(unsigned int id) { ModelQueueForRender.erase(id);                    }
@@ -47,6 +49,10 @@ RenderPipeline::RenderPipeline(RendererWindow* _window) : window(_window)
         FileSystem::GetContentPath() / "Shader/cubemap.fs", true);
     irradiance_convolution_shader = new Shader(FileSystem::GetContentPath() / "Shader/cubemap.vs",
         FileSystem::GetContentPath() / "Shader/irradiance_convolution.fs", true);
+    prefilter_shader = new Shader(FileSystem::GetContentPath() / "Shader/cubemap.vs",
+        FileSystem::GetContentPath() / "Shader/prefilter.fs", true);
+    brdf_shader = new Shader(FileSystem::GetContentPath() / "Shader/brdf.vs",
+        FileSystem::GetContentPath() / "Shader/brdf.fs", true);
 
     skybox_shader->LoadShader();
     depth_shader->LoadShader();
@@ -55,6 +61,8 @@ RenderPipeline::RenderPipeline(RendererWindow* _window) : window(_window)
     fragpos_shader->LoadShader();
     cubemap_shader->LoadShader();
     irradiance_convolution_shader->LoadShader();
+    prefilter_shader->LoadShader();
+    brdf_shader->LoadShader();
 
     lights.clear();
 }
@@ -66,11 +74,17 @@ RenderPipeline::~RenderPipeline()
     delete fragpos_texture;
     delete shadow_map;
     delete skybox_cubemap;
+    delete irradiance_cubemap;
+    delete prefilter_cubemap;
+
     delete skybox_shader;
     delete depth_shader;
     delete grid_shader;
     delete fragpos_shader;
     delete cubemap_shader;
+    delete irradiance_convolution_shader;
+    delete prefilter_shader;
+    delete brdf_shader;
 }
 
 SceneModel *RenderPipeline::GetRenderModel(unsigned int id)
@@ -93,11 +107,9 @@ void RenderPipeline::OnWindowSizeChanged(int width, int height)
     delete depth_texture;
     delete normal_texture;
     delete fragpos_texture;
-    delete skybox_cubemap;
     depth_texture = new DepthTexture(width, height);
     normal_texture = new RenderTexture(width, height);
     fragpos_texture = new RenderTexture(width, height);
-    skybox_cubemap = new SkyboxTexture(width, height);
 }
 
 /*********************
@@ -249,6 +261,7 @@ void RenderPipeline::ProcessCubeMapPass() {
     skybox_cubemap = new SkyboxTexture(skybox_cube_map_setting.skybox_cube_map_width, skybox_cube_map_setting.skybox_cube_map_height);
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LEQUAL);
+    glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
     skybox_cubemap->BindFrameBuffer();
     glClearColor(1, 1, 1, 1);
 
@@ -295,6 +308,59 @@ void RenderPipeline::ProcessIrradianceCubemap() {
 
         RenderCube();
     }
+
+    FrameBufferTexture::ClearBufferBinding();
+}
+
+void RenderPipeline::ProcessSpecularIBLPass() {
+    // pbr: create a pre-filter cubemap, and re-scale capture FBO to pre-filter scale.
+    prefilter_cubemap = new SignleCubeMapTexture(prefilter_cube_map_setting.prefilter_cube_map_width, prefilter_cube_map_setting.prefilter_cube_map_height);
+
+    // pbr: run a quasi monte-carlo simulation on the environment lighting to create a prefilter (cube)map.
+    // ----------------------------------------------------------------------------------------------------
+    prefilter_shader->use();
+    prefilter_shader->setInt("environmentMap", 0);
+    prefilter_shader->setMat4("projection", captureProjection);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, skybox_cubemap->environment_cubemap_buffer);
+
+    glBindFramebuffer(GL_FRAMEBUFFER, skybox_cubemap->GetFrameBuffer());
+    unsigned int maxMipLevels = 5;
+    for (unsigned int mip = 0; mip < maxMipLevels; ++mip)
+    {
+        // reisze framebuffer according to mip-level size.
+        unsigned int mipWidth = static_cast<unsigned int>(prefilter_cube_map_setting.prefilter_cube_map_width * std::pow(0.5, mip));
+        unsigned int mipHeight = static_cast<unsigned int>(prefilter_cube_map_setting.prefilter_cube_map_height * std::pow(0.5, mip));
+        glBindRenderbuffer(GL_RENDERBUFFER, skybox_cubemap->GetRenderBuffer());
+        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, mipWidth, mipHeight);
+        glViewport(0, 0, mipWidth, mipHeight);
+
+        float roughness = (float)mip / (float)(maxMipLevels - 1);
+        prefilter_shader->setFloat("roughness", roughness);
+        for (unsigned int i = 0; i < 6; ++i)
+        {
+            prefilter_shader->setMat4("view", captureViews[i]);
+            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, prefilter_cubemap->cubemap_buffer, mip);
+
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            RenderCube();
+        }
+    }
+
+    FrameBufferTexture::ClearBufferBinding();
+
+
+    brdf_lut_texture = new OtherFrameBufferAndRenderBufferTexture2D(skybox_cube_map_setting.skybox_cube_map_width, skybox_cube_map_setting.skybox_cube_map_height, skybox_cubemap->GetFrameBuffer(), skybox_cubemap->GetRenderBuffer());
+
+    glBindFramebuffer(GL_FRAMEBUFFER, skybox_cubemap->GetFrameBuffer());
+    glBindRenderbuffer(GL_RENDERBUFFER, skybox_cubemap->GetRenderBuffer());
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, 512, 512);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, brdf_lut_texture->color_buffer, 0);
+
+    glViewport(0, 0, skybox_cube_map_setting.skybox_cube_map_width, skybox_cube_map_setting.skybox_cube_map_height);
+    brdf_shader->use();
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    RenderQuad();
 
     FrameBufferTexture::ClearBufferBinding();
 }
@@ -369,9 +435,15 @@ void RenderPipeline::ProcessColorPass()
             shader->setInt("numSpotLights", GetSpotLightNum());
             shader->setBool("useIBL", EditorSettings::UseIBL);
             if (EditorSettings::UseIBL) {
+                shader->setInt("irradianceMap", 1);
+                shader->setInt("prefilterMap", 2);
+                shader->setInt("brdfLUT", 3);
                 glActiveTexture(GL_TEXTURE1);
                 glBindTexture(GL_TEXTURE_CUBE_MAP, irradiance_cubemap->irradiance_cubemap_buffer);
-                shader->setInt("irradianceMap", 1);
+                glActiveTexture(GL_TEXTURE2);
+                glBindTexture(GL_TEXTURE_CUBE_MAP, prefilter_cubemap->cubemap_buffer);
+                glActiveTexture(GL_TEXTURE3);
+                glBindTexture(GL_TEXTURE_2D, brdf_lut_texture->color_buffer);
             }
 
             unsigned int point_light_id = 0;
@@ -385,7 +457,7 @@ void RenderPipeline::ProcessColorPass()
                     shader->setFloat(uniformName + ".constant", light->atr_lightRenderer->GetConstant());
                     shader->setFloat(uniformName + ".linear", light->atr_lightRenderer->GetLinear());
                     shader->setFloat(uniformName + ".quadratic", light->atr_lightRenderer->GetQuadratic());
-                    shader->setVec3(uniformName + ".color", light->GetLightColor());
+                    shader->setVec3(uniformName + ".color", light->GetLightColor() * 255.0f);
 
                     point_light_id++;
                 }
@@ -396,7 +468,7 @@ void RenderPipeline::ProcessColorPass()
                     shader->setFloat(uniformName + ".constant", light->atr_lightRenderer->GetConstant());
                     shader->setFloat(uniformName + ".linear", light->atr_lightRenderer->GetLinear());
                     shader->setFloat(uniformName + ".quadratic", light->atr_lightRenderer->GetQuadratic());
-                    shader->setVec3(uniformName + ".color", light->GetLightColor());
+                    shader->setVec3(uniformName + ".color", light->GetLightColor() * 255.0f);
                     shader->setFloat(uniformName + ".cutOff", light->atr_lightRenderer->GetCutOff());
                     shader->setFloat(uniformName + ".outerCutOff", light->atr_lightRenderer->GetOuterCutOff());
 
@@ -413,7 +485,7 @@ void RenderPipeline::ProcessColorPass()
                 glm::vec3 front = global_light->atr_transform->transform->GetFront();
                 shader->setVec3("lightDir", front);
                 glm::vec3 lightColor = global_light->GetLightColor();
-                shader->setVec3("lightColor", lightColor);
+                shader->setVec3("lightColor", lightColor * 5.f);
             }
             else
             {
@@ -532,9 +604,9 @@ void RenderPipeline::Render()
         if (EditorSettings::NeedUpdateSkybox) {
             ProcessCubeMapPass();
             ProcessIrradianceCubemap();
+            ProcessSpecularIBLPass();
             EditorSettings::NeedUpdateSkybox = false;
         }
-        
     }
 
     // Pre Render Setting
@@ -578,8 +650,9 @@ void RenderPipeline::RenderSkybox() {
     skybox_shader->setMat4("view", view);
     skybox_shader->setInt("environmentMap", 0);
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_CUBE_MAP, skybox_cubemap->environment_cubemap_buffer);
-    
+    // glBindTexture(GL_TEXTURE_CUBE_MAP, skybox_cubemap->environment_cubemap_buffer);
+    // glBindTexture(GL_TEXTURE_CUBE_MAP, irradiance_cubemap->irradiance_cubemap_buffer);
+    // glBindTexture(GL_TEXTURE_CUBE_MAP, prefilter_cubemap->cubemap_buffer);
     RenderCube();
 }
 
@@ -670,5 +743,32 @@ void RenderPipeline::RenderCube() {
     // render Cube
     glBindVertexArray(cubeVAO);
     glDrawArrays(GL_TRIANGLES, 0, 36);
+    glBindVertexArray(0);
+}
+
+void RenderPipeline::RenderQuad()
+{
+    if (quadVAO == 0)
+    {
+        float quadVertices[] = {
+            // positions        // texture Coords
+            -1.0f,  1.0f, 0.0f, 0.0f, 1.0f,
+            -1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
+             1.0f,  1.0f, 0.0f, 1.0f, 1.0f,
+             1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
+        };
+        // setup plane VAO
+        glGenVertexArrays(1, &quadVAO);
+        glGenBuffers(1, &quadVBO);
+        glBindVertexArray(quadVAO);
+        glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+        glEnableVertexAttribArray(1);
+        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+    }
+    glBindVertexArray(quadVAO);
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
     glBindVertexArray(0);
 }
