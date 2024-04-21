@@ -48,8 +48,8 @@ public:
 
     struct PrefilterCubeMapSetting
     {
-        float prefilter_cube_map_width = 256;
-        float prefilter_cube_map_height = 256;
+        float prefilter_cube_map_width = 254;
+        float prefilter_cube_map_height = 254;
     } prefilter_cube_map_setting;
 
     float *clear_color;
@@ -77,6 +77,7 @@ private:
     Shader* irradiance_convolution_shader;
     Shader* prefilter_shader;
     Shader* brdf_shader;
+    Shader* test_shader;
 
     void ProcessCubeMapPass();
     void ProcessIrradianceCubemap();
@@ -89,10 +90,12 @@ private:
     void RenderGizmos();
     void RenderSkybox();
     void RenderCube();
+    void RenderIrradianceMap();
+    void RenderPrefilterMap();
     void RenderQuad();
-
     int GetPointLightNum();
     int GetSpotLightNum();
+
     unsigned int cubeVAO = 0;
     unsigned int cubeVBO = 0;
     unsigned int quadVAO = 0;

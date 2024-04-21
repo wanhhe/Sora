@@ -242,11 +242,11 @@ PBRLightingInfo CalculatePBRLighting(vec3 n, vec3 albedo, float m, float r, vec3
         vec3 diffuse = irradiance * albedo;
 
         // sample both the pre-filter map and the BRDF lut and combine them together as per the Split-Sum approximation to get the IBL specular part.
-        const float MAX_REFLECTION_LOD = 1.0;
+        const float MAX_REFLECTION_LOD = 4.0;
         vec3 prefilteredColor = textureLod(prefilterMap, R,  r * MAX_REFLECTION_LOD).rgb;    
         vec2 brdf = texture(brdfLUT, vec2(max(dot(n, v), 0.0), r)).rg;
+        // vec2 brdf = texture(brdfLUT, vec2(0.5,0.5)).rg;
         vec3 specular = prefilteredColor * (F * brdf.x + brdf.y);
-
         pbr.ambient = (kD * diffuse + specular) * ao;
     } else {
         pbr.ambient = ambient; 
@@ -277,7 +277,7 @@ float ShadowCalculation(vec4 fragPosLightSpace, vec3 normal, vec3 lightDir)
     // 取得当前片段在光源视角下的深度
     float currentDepth = projCoords.z;
     // 检查当前片段是否在阴影中
-    float bias = max(0.0001 * (1.0 - dot(normal, lightDir)), 0.00001);
+    float bias = max(0.01 * (1.0 - dot(normal, lightDir)), 0.0001);
     // float bias = 0.00001;
     // float shadow = currentDepth - bias > closestDepth  ? 1.0 : 0.0;
     float shadow = 0.0;
@@ -318,4 +318,5 @@ void main()
     float shadow = ShadowCalculation(fs_in.FragPosLightSpace, normalWS, lightDir);
     vec3 midres = GetPBRLightingResult(PBR, NdotL, shadow);
     FragColor = vec4(midres.rgb, 1.0);
+    // FragColor = vec4((PBR.Lo + PBR.ambient) / (PBR.Lo + PBR.ambient + vec3(1.0)), 1.0);
 }

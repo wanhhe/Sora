@@ -28,7 +28,7 @@ float lastFrame     = 0.0f;     // 上一帧的时间
 float deltaTime     = 0.0f;
 
 // Create camera
-Camera camera(glm::vec3(0.0f, 20.0f, 30.0f), glm::vec3(0.0f, 1.0f, 0.0f), -90, -40);
+Camera camera(glm::vec3(8.0f, 7.5f, 10.0f), glm::vec3(0.0f, 1.0f, 0.0f), -130, -40);
 
 int main()
 {

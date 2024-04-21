@@ -53,6 +53,8 @@ RenderPipeline::RenderPipeline(RendererWindow* _window) : window(_window)
         FileSystem::GetContentPath() / "Shader/prefilter.fs", true);
     brdf_shader = new Shader(FileSystem::GetContentPath() / "Shader/brdf.vs",
         FileSystem::GetContentPath() / "Shader/brdf.fs", true);
+    test_shader = new Shader(FileSystem::GetContentPath() / "Shader/cubemap.vs",
+        FileSystem::GetContentPath() / "Shader/skybox.fs", true);
 
     skybox_shader->LoadShader();
     depth_shader->LoadShader();
@@ -63,6 +65,7 @@ RenderPipeline::RenderPipeline(RendererWindow* _window) : window(_window)
     irradiance_convolution_shader->LoadShader();
     prefilter_shader->LoadShader();
     brdf_shader->LoadShader();
+    test_shader->LoadShader();
 
     lights.clear();
 }
@@ -121,7 +124,7 @@ void RenderPipeline::ProcessShadowPass()
     glEnable(GL_DEPTH_TEST);
     shadow_map->BindFrameBuffer();
     glClear(GL_DEPTH_BUFFER_BIT);
-    GLfloat near_plane = 1.0f, far_plane = 10000.0f;
+    GLfloat near_plane = 0.1f, far_plane = 100.0f;
     float sdm_size = shadow_map_setting.shadow_distance;
     glm::mat4 light_projection = glm::ortho(-sdm_size, sdm_size, -sdm_size, sdm_size, near_plane, far_plane);
     Transform* light_transform = global_light->atr_transform->transform;
@@ -168,7 +171,7 @@ void RenderPipeline::ProcessZPrePass()
     glClear(GL_DEPTH_BUFFER_BIT);
     // view/projection transformations
     Camera* camera = window->render_camera;
-    glm::mat4 projection = glm::perspective(glm::radians(camera->Zoom), (float)window->Width() / (float)window->Height(), 0.1f, 10000.0f);
+    glm::mat4 projection = glm::perspective(glm::radians(camera->Zoom), (float)window->Width() / (float)window->Height(), 0.1f, 100.0f);
     glm::mat4 view = camera->GetViewMatrix();
 
     for (std::map<unsigned int, SceneModel *>::iterator it = ModelQueueForRender.begin(); it != ModelQueueForRender.end(); it++)
@@ -197,11 +200,11 @@ void RenderPipeline::ProcessFragposPass()
 {
     // Draw fragpos buffer
     fragpos_texture->BindFrameBuffer();
-    glClearColor(0,0,-10000.0,1);
+    glClearColor(0,0,-100.0,1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     Camera* camera = window->render_camera;
-    glm::mat4 projection = glm::perspective(glm::radians(camera->Zoom), (float)window->Width() / (float)window->Height(), 0.1f, 10000.0f);
+    glm::mat4 projection = glm::perspective(glm::radians(camera->Zoom), (float)window->Width() / (float)window->Height(), 0.1f, 100.0f);
     glm::mat4 view = camera->GetViewMatrix();
 
     for (std::map<unsigned int, SceneModel *>::iterator it = ModelQueueForRender.begin(); it != ModelQueueForRender.end(); it++)
@@ -234,7 +237,7 @@ void RenderPipeline::ProcessNormalPass()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     // view/projection transformations
     Camera* camera = window->render_camera;
-    glm::mat4 projection = glm::perspective(glm::radians(camera->Zoom), (float)window->Width() / (float)window->Height(), 0.1f, 10000.0f);
+    glm::mat4 projection = glm::perspective(glm::radians(camera->Zoom), (float)window->Width() / (float)window->Height(), 0.1f, 100.0f);
     glm::mat4 view = camera->GetViewMatrix();
 
     for (std::map<unsigned int, SceneModel *>::iterator it = ModelQueueForRender.begin(); it != ModelQueueForRender.end(); it++)
@@ -354,7 +357,7 @@ void RenderPipeline::ProcessSpecularIBLPass() {
 
     glBindFramebuffer(GL_FRAMEBUFFER, skybox_cubemap->GetFrameBuffer());
     glBindRenderbuffer(GL_RENDERBUFFER, skybox_cubemap->GetRenderBuffer());
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, 512, 512);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, skybox_cube_map_setting.skybox_cube_map_width, skybox_cube_map_setting.skybox_cube_map_height);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, brdf_lut_texture->color_buffer, 0);
 
     glViewport(0, 0, skybox_cube_map_setting.skybox_cube_map_width, skybox_cube_map_setting.skybox_cube_map_height);
@@ -387,10 +390,10 @@ void RenderPipeline::ProcessColorPass()
     glViewport(0, 0, window->Width(), window->Height());
     // view/projection transformations
     Camera* camera = window->render_camera;
-    glm::mat4 projection = glm::perspective(glm::radians(camera->Zoom), (float)window->Width() / (float)window->Height(), 0.1f, 10000.0f);
+    glm::mat4 projection = glm::perspective(glm::radians(camera->Zoom), (float)window->Width() / (float)window->Height(), 0.1f, 100.0f);
     glm::mat4 view = camera->GetViewMatrix();
 
-    GLfloat near_plane = 1.0f, far_plane = 10000.0f;
+    GLfloat near_plane = 0.1f, far_plane = 100.0f;
     float sdm_size = shadow_map_setting.shadow_distance;
     glm::mat4 light_projection = glm::ortho(-sdm_size, sdm_size, -sdm_size, sdm_size, near_plane, far_plane);
     Transform* light_transform = global_light->atr_transform->transform;
@@ -507,7 +510,7 @@ void RenderPipeline::RenderGizmos()
     Camera* camera = window->render_camera;
     glm::mat4 model = glm::mat4(1.0f);
     glm::mat4 view = camera->GetViewMatrix();
-    glm::mat4 projection = glm::perspective(glm::radians(camera->Zoom), (float)window->Width() / (float)window->Height(), 0.1f, 10000.0f);
+    glm::mat4 projection = glm::perspective(glm::radians(camera->Zoom), (float)window->Width() / (float)window->Height(), 0.1f, 100.0f);
     Shader::LoadedShaders["color.fs"]->use();
     Shader::LoadedShaders["color.fs"]->setMat4("model", model);
     Shader::LoadedShaders["color.fs"]->setMat4("view", view);
@@ -622,6 +625,12 @@ void RenderPipeline::Render()
     // Draw color pass
     ProcessColorPass();
 
+    //if (EditorSettings::UseSkybox && EditorSettings::SkyboxTexture != nullptr) {
+    //    RenderIrradianceMap();
+    //    RenderPrefilterMap();
+    //}
+    
+
     // Draw Gizmos
     if (EditorSettings::DrawGizmos)
     {
@@ -645,14 +654,42 @@ void RenderPipeline::RenderSkybox() {
     Camera* camera = window->render_camera;
     glm::mat4 view = camera->GetViewMatrix();
     skybox_shader->use();
-    glm::mat4 projection = glm::perspective(glm::radians(camera->Zoom), (float)window->Width() / (float)window->Height(), 0.1f, 1000.0f);
+    glm::mat4 projection = glm::perspective(glm::radians(camera->Zoom), (float)window->Width() / (float)window->Height(), 0.1f, 100.0f);
     skybox_shader->setMat4("projection", projection);
     skybox_shader->setMat4("view", view);
     skybox_shader->setInt("environmentMap", 0);
     glActiveTexture(GL_TEXTURE0);
-    // glBindTexture(GL_TEXTURE_CUBE_MAP, skybox_cubemap->environment_cubemap_buffer);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, skybox_cubemap->environment_cubemap_buffer);
     // glBindTexture(GL_TEXTURE_CUBE_MAP, irradiance_cubemap->irradiance_cubemap_buffer);
     // glBindTexture(GL_TEXTURE_CUBE_MAP, prefilter_cubemap->cubemap_buffer);
+    RenderCube();
+}
+
+void RenderPipeline::RenderIrradianceMap() {
+    glViewport(0, 0, window->Width(), window->Height());
+    Camera* camera = window->render_camera;
+    glm::mat4 view = camera->GetViewMatrix();
+    test_shader->use();
+    glm::mat4 projection = glm::perspective(glm::radians(camera->Zoom), (float)window->Width() / (float)window->Height(), 0.1f, 100.0f);
+    test_shader->setMat4("projection", projection);
+    test_shader->setMat4("view", view);
+    test_shader->setInt("environmentMap", 0);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, irradiance_cubemap->irradiance_cubemap_buffer);
+    RenderCube();
+}
+
+void RenderPipeline::RenderPrefilterMap() {
+    glViewport(0, 0, window->Width(), window->Height());
+    Camera* camera = window->render_camera;
+    glm::mat4 view = camera->GetViewMatrix();
+    test_shader->use();
+    glm::mat4 projection = glm::perspective(glm::radians(camera->Zoom), (float)window->Width() / (float)window->Height(), 0.1f, 100.0f);
+    test_shader->setMat4("projection", projection);
+    test_shader->setMat4("view", view);
+    test_shader->setInt("environmentMap", 0);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, prefilter_cubemap->cubemap_buffer);
     RenderCube();
 }
 
