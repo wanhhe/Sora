@@ -421,7 +421,6 @@ void ATR_Material::Load(const nlohmann::json& objectJson) {
 
 ATR_MeshRenderer::ATR_MeshRenderer(MeshRenderer *_meshRenderer) : meshRenderer(_meshRenderer)
 {
-    std::cout << "new" << std::endl;
     atr_material = new ATR_Material(_meshRenderer->material);
     id = cur_id++;
 }
@@ -549,11 +548,23 @@ void ATR_LightRenderer::Save(nlohmann::json& objectJson) {
     objectJson["atr_light"] = atr_light_json;
 }
 
-void ATR_LightRenderer::Load(const nlohmann::json& objectJson) {
+void ATR_LightRenderer::Load(const nlohmann::json& objectJson, float* _color) {
     id = objectJson["id"];
     prev_light = objectJson["prev_light"];
     cur_light = objectJson["cur_light"];
     cur_id = objectJson["cur_id"];
+    if (objectJson["atr_light"]["light_type"] == 0) { // 平行光
+        delete atr_light;
+        atr_light = new ATR_DirLight(_color);
+    }
+    else if (objectJson["atr_light"]["light_type"] == 1) { // 点光源
+        delete atr_light;
+        atr_light = new ATR_PointLight(_color);
+    }
+    else { // 聚光
+        delete atr_light;
+        atr_light = new ATR_SpotLight(_color);
+    }
     atr_light->Load(objectJson["atr_light"]);
 }
 
@@ -567,6 +578,7 @@ void ATR_Light::UI_Implement()
 void ATR_Light::Save(nlohmann::json& objectJson) {
     objectJson["light_type"] = light_type;
     objectJson["drag_speed"] = drag_speed;
+    objectJson["color"] = { color[0], color[1], color[2] };
     objectJson["constant"] = GetConstant();
     objectJson["linear"] = GetLinear();
     objectJson["quadratic"] = GetQuadratic();

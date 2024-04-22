@@ -184,8 +184,7 @@ void SceneLight::Save(nlohmann::json& objectJson) {
 
 void SceneLight::Load(const nlohmann::json& objectJson) {
     SceneObject::Load(objectJson);
-    atr_lightRenderer->Load(objectJson["light"]["atr_light_renderer"].get<nlohmann::json>());
-
+    atr_lightRenderer->Load(objectJson["light"]["atr_light_renderer"].get<nlohmann::json>(), light_color);
     light_color[0] = objectJson["light"]["light_color"][0];
     light_color[1] = objectJson["light"]["light_color"][1];
     light_color[2] = objectJson["light"]["light_color"][2];

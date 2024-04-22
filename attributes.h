@@ -249,7 +249,7 @@ public:
     float GetCutOff() { return atr_light->GetCutOff(); };
     float GetOuterCutOff() { return atr_light->GetOuterCutOff(); }
     void Save(nlohmann::json& objectJson);
-    void Load(const nlohmann::json& objectJson);
+    void Load(const nlohmann::json& objectJson, float* color);
 
     unsigned int id;
 
