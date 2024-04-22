@@ -196,7 +196,7 @@ void renderer_ui::ImportModelPanel(RendererWindow *window)
         if (ImGui::Button("Confirm"))
         {
             std::string path_s = model_path;
-            Model *new_model = new Model(path_s);
+            Model* new_model = new Model(path_s);
             if (new_model->meshes.size() == 0)
             {
                 info = "Load failed";

@@ -39,7 +39,7 @@ class Model
 public:
     // model data 
     vector<Texture2D*> textures_loaded;	// stores all the textures loaded so far, optimization to make sure textures aren't loaded more than once.
-    vector<Mesh*>    meshes;
+    vector<Mesh*> meshes;
     string directory;
     bool gammaCorrection;
     string name;

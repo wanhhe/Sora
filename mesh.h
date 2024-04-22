@@ -136,7 +136,7 @@ class MeshRenderer
 {
 public:
     Material* material;
-    Mesh        *mesh;
+    Mesh* mesh;
     bool        cast_shadow = true;
 
 public:

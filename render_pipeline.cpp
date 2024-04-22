@@ -261,6 +261,7 @@ void RenderPipeline::ProcessNormalPass()
 }
 
 void RenderPipeline::ProcessCubeMapPass() {
+    if (skybox_cubemap != nullptr) delete skybox_cubemap;
     skybox_cubemap = new SkyboxTexture(skybox_cube_map_setting.skybox_cube_map_width, skybox_cube_map_setting.skybox_cube_map_height);
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LEQUAL);
@@ -289,6 +290,7 @@ void RenderPipeline::ProcessCubeMapPass() {
 }
 
 void RenderPipeline::ProcessIrradianceCubemap() {
+    if (irradiance_cubemap != nullptr) delete irradiance_cubemap;
     irradiance_cubemap = new IrradianceTexture(irradiance_cube_map_setting.irradiance_cube_map_width, irradiance_cube_map_setting.irraidance_cube_map_height, skybox_cubemap->GetFrameBuffer(), skybox_cubemap->GetRenderBuffer());
 
     glBindFramebuffer(GL_FRAMEBUFFER, skybox_cubemap->GetFrameBuffer());
@@ -316,6 +318,7 @@ void RenderPipeline::ProcessIrradianceCubemap() {
 }
 
 void RenderPipeline::ProcessSpecularIBLPass() {
+    if (prefilter_cubemap != nullptr) delete prefilter_cubemap;
     // pbr: create a pre-filter cubemap, and re-scale capture FBO to pre-filter scale.
     prefilter_cubemap = new SignleCubeMapTexture(prefilter_cube_map_setting.prefilter_cube_map_width, prefilter_cube_map_setting.prefilter_cube_map_height);
 

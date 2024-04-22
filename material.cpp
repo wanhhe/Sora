@@ -64,6 +64,18 @@ void Material::OnTextureRemoved(Texture2D *removed_texture)
     }
 }
 
+void Material::Save(nlohmann::json& objectJson) {
+    objectJson["id"] = id;
+    objectJson["cur_id"] = cur_id;
+    objectJson["cull_face"] = cullface;
+}
+
+void Material::Load(const nlohmann::json& objectJson) {
+    id = objectJson["id"];
+    cur_id = objectJson["cur_id"];
+    cullface = objectJson["cull_face"];
+}
+
 Material* MaterialManager::CreateMaterialByType(EMaterialType type)
 {
     switch (type)
@@ -97,7 +109,7 @@ ModelMaterial::ModelMaterial() : Material()
     albedo = EditorContent::editor_tex["default_tex"];
     material_variables.allTextures.push_back(new MaterialSlot<MaterialTexture2D>("albedo_map", MaterialTexture2D(&albedo)));
     albedo->textureRefs.AddRef(this);
-    material_variables.allColor.push_back(new MaterialSlot<float *>("color", color));
+    material_variables.allColor.push_back(new MaterialSlot<float*>("color", color));
 }
 
 ModelMaterial::ModelMaterial(Texture2D *_albedo) : Material::Material()
@@ -113,6 +125,22 @@ ModelMaterial::ModelMaterial(Texture2D *_albedo) : Material::Material()
 void ModelMaterial::Setup(std::vector<Texture2D *> default_textures)
 { 
     DefaultSetup(default_textures);
+}
+
+void ModelMaterial::Save(nlohmann::json& objectJson) {
+    Material::Save(objectJson);
+    objectJson["name"] = name;
+    objectJson["albedo_map"] = albedo->name;
+    objectJson["color"] = { color[0], color[1], color[2] };
+}
+
+void ModelMaterial::Load(const nlohmann::json& objectJson) {
+    // name = objectJson["name"];
+    Material::Load(objectJson);
+    SetTexture(&albedo, Texture2D::LoadedTextures[objectJson["albedo_map"]]);
+    color[0] = objectJson["color"][0];
+    color[1] = objectJson["color"][1];
+    color[2] = objectJson["color"][2];
 }
 
 PBRMaterial::PBRMaterial() : Material::Material()
@@ -132,18 +160,51 @@ PBRMaterial::PBRMaterial() : Material::Material()
     material_variables.allTextures.push_back(new MaterialSlot<MaterialTexture2D>("roughness_map", MaterialTexture2D(&roughness_map)));
     material_variables.allTextures.push_back(new MaterialSlot<MaterialTexture2D>("metal_map", MaterialTexture2D(&metal_map)));
 
-    material_variables.allColor.push_back(new MaterialSlot<float *>("color", color));
+    material_variables.allColor.push_back(new MaterialSlot<float*>("color", color));
 
-    material_variables.allFloat.push_back(new MaterialSlot<float *>("normalStrength", &normal_strength));
-    material_variables.allFloat.push_back(new MaterialSlot<float *>("aoStrength", &ao_strength));
-    material_variables.allFloat.push_back(new MaterialSlot<float *>("roughnessStrength", &roughness_strength));
-    material_variables.allFloat.push_back(new MaterialSlot<float *>("metalStrength", &metal_strength));
-    material_variables.allFloat.push_back(new MaterialSlot<float *>("shadowStrength", &shadow_strength));
+    material_variables.allFloat.push_back(new MaterialSlot<float*>("normalStrength", &normal_strength));
+    material_variables.allFloat.push_back(new MaterialSlot<float*>("aoStrength", &ao_strength));
+    material_variables.allFloat.push_back(new MaterialSlot<float*>("roughnessStrength", &roughness_strength));
+    material_variables.allFloat.push_back(new MaterialSlot<float*>("metalStrength", &metal_strength));
+    material_variables.allFloat.push_back(new MaterialSlot<float*>("shadowStrength", &shadow_strength));
 }
 
 void PBRMaterial::Setup(std::vector<Texture2D *> default_textures)
 { 
     DefaultSetup(default_textures);
+}
+
+void PBRMaterial::Save(nlohmann::json& objectJson) {
+    Material::Save(objectJson);
+    objectJson["name"] = name;
+    objectJson["albedo_map"] = albedo_map->name;
+    objectJson["normal_map"] = normal_map->name;
+    objectJson["ao_map"] = ao_map->name;
+    objectJson["roughness_map"] = roughness_map->name;
+    objectJson["metal_map"] = metal_map->name;
+    objectJson["color"] = {color[0], color[1], color[2]};
+    objectJson["normal_strength"] = normal_strength;
+    objectJson["ao_strength"] = ao_strength;
+    objectJson["roughness_strength"] = roughness_strength;
+    objectJson["metal_strength"] = metal_strength;
+    objectJson["shadow_strength"] = shadow_strength;
+}
+
+void PBRMaterial::Load(const nlohmann::json& objectJson) {
+    Material::Load(objectJson);
+    SetTexture(&albedo_map, Texture2D::LoadedTextures[objectJson["albedo_map"]]);
+    SetTexture(&normal_map, Texture2D::LoadedTextures[objectJson["normal_map"]]);
+    SetTexture(&ao_map, Texture2D::LoadedTextures[objectJson["ao_map"]]);
+    SetTexture(&roughness_map, Texture2D::LoadedTextures[objectJson["roughness_map"]]);
+    SetTexture(&metal_map, Texture2D::LoadedTextures[objectJson["metal_map"]]);
+    color[0] = objectJson["color"][0];
+    color[1] = objectJson["color"][1];
+    color[2] = objectJson["color"][2];
+    normal_strength = objectJson["normal_strength"];
+    ao_strength = objectJson["ao_strength"];
+    roughness_strength = objectJson["roughness_strength"];
+    metal_strength = objectJson["metal_strength"];
+    shadow_strength = objectJson["shadow_strength"];
 }
 
 UnlitMaterial::UnlitMaterial() : Material()
@@ -160,6 +221,17 @@ void UnlitMaterial::Setup(std::vector<Texture2D *> default_textures)
     DefaultSetup(default_textures);
 }
 
+void UnlitMaterial::Save(nlohmann::json& objectJson) {
+    Material::Save(objectJson);
+    objectJson["name"] = name;
+    objectJson["albedo_map"] = albedo_map->name;
+}
+
+void UnlitMaterial::Load(const nlohmann::json& objectJson) {
+    Material::Load(objectJson);
+    SetTexture(&albedo_map, Texture2D::LoadedTextures[objectJson["albedo_map"]]);
+}
+
 NPRMaterial::NPRMaterial() : Material() {
     shader = Shader::LoadedShaders["npr1.fs"];
 
@@ -170,4 +242,15 @@ NPRMaterial::NPRMaterial() : Material() {
 
 void NPRMaterial::Setup(std::vector<Texture2D*> default_textures) {
     DefaultSetup(default_textures);
+}
+
+void NPRMaterial::Save(nlohmann::json& objectJson) {
+    Material::Save(objectJson);
+    objectJson["name"] = name;
+    objectJson["albedo_map"] = albedo_map->name;
+}
+
+void NPRMaterial::Load(const nlohmann::json& objectJson) {
+    Material::Load(objectJson);
+    SetTexture(&albedo_map, Texture2D::LoadedTextures[objectJson["albedo_map"]]);
 }

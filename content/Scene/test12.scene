@@ -1,0 +1,167 @@
+{
+    "editor_settings_json": {
+        "draw_gizmos": true,
+        "need_update_skybox": false,
+        "use_ibl": false,
+        "use_polygon_mode": false,
+        "use_post_process": true
+    },
+    "models": [
+        {
+            "directory": "G:/Sora/content/Models",
+            "name": "cube.fbx"
+        },
+        {
+            "directory": "G:/Sora/content/Models",
+            "name": "plane.obj"
+        },
+        {
+            "directory": "G:/Sora/content/Models",
+            "name": "sphere.fbx"
+        }
+    ],
+    "scene_objects": [
+        {
+            "id": 0,
+            "is_editor": true,
+            "is_selected": false,
+            "light": {
+                "atr_light_renderer": {
+                    "atr_light": {
+                        "constant": 1.0,
+                        "cut_off": 0.9762960076332092,
+                        "drag_speed": 0.10000000149011612,
+                        "light_type": 0,
+                        "linear": 0.09000000357627869,
+                        "outer_cut_off": 0.9366722106933594,
+                        "quadratic": 0.03200000151991844
+                    },
+                    "cur_id": 80001,
+                    "cur_light": 0,
+                    "id": 80000,
+                    "prev_light": 0
+                },
+                "light color": [
+                    0.009999999776482582,
+                    0.009999999776482582,
+                    0.009999999776482582
+                ]
+            },
+            "name": "Global Light",
+            "transform": {
+                "Front": [
+                    0.0,
+                    -0.8660253882408142,
+                    -0.5000001192092896
+                ],
+                "Right": [
+                    -1.0,
+                    -0.0,
+                    0.0
+                ],
+                "Up": [
+                    0.0,
+                    -0.5000001192092896,
+                    0.8660253882408142
+                ],
+                "position": [
+                    0.0,
+                    10.0,
+                    0.0
+                ],
+                "rotation": [
+                    120.00000762939453,
+                    -0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            }
+        },
+        {
+            "id": 1,
+            "is_editor": true,
+            "is_selected": false,
+            "name": "post process manager",
+            "transform": {
+                "Front": [
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "Right": [
+                    -1.0,
+                    0.0,
+                    0.0
+                ],
+                "Up": [
+                    0.0,
+                    1.0,
+                    0.0
+                ],
+                "position": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            }
+        }
+    ],
+    "textures": [
+        {
+            "id": 9,
+            "is_editor": true,
+            "name": "file_ico.png",
+            "path": "G:/Sora/editor/ico/file_ico.png",
+            "tex_type": 4
+        },
+        {
+            "id": 8,
+            "is_editor": true,
+            "name": "folder_ico.png",
+            "path": "G:/Sora/editor/ico/folder_ico.png",
+            "tex_type": 4
+        },
+        {
+            "id": 18,
+            "is_editor": false,
+            "name": "lightgold_metallic.png",
+            "path": "G:/Sora/content/Models/light-gold-bl/lightgold_metallic.png",
+            "tex_type": 1
+        },
+        {
+            "id": 5,
+            "is_editor": true,
+            "name": "normal.png",
+            "path": "G:/Sora/content/Textures/normal.png",
+            "tex_type": 2
+        },
+        {
+            "id": 6,
+            "is_editor": false,
+            "name": "wall.jpg",
+            "path": "G:/Sora/content/Textures/wall.jpg",
+            "tex_type": 3
+        },
+        {
+            "id": 7,
+            "is_editor": true,
+            "name": "white.png",
+            "path": "G:/Sora/content/Textures/white.png",
+            "tex_type": 4
+        }
+    ]
+}

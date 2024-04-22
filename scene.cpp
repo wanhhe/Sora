@@ -4,6 +4,7 @@
 #include "model.h"
 #include "scene.h"
 #include "shader.h"
+#include "postprocess.h"
 
 Scene::Scene(RendererWindow *_window) : window(_window), render_pipeline(RenderPipeline(_window))
 {
@@ -73,18 +74,68 @@ void Scene::SaveScene(const std::string _path) {
     }
     sceneJson["scene_objects"] = sceneObjectsJson;
 
-    //// 添加渲染管线的状态
-    //nlohmann::json renderPipelineJson;
+    // 添加渲染设置的状态
+    nlohmann::json editor_settings_json;
+    editor_settings_json["use_polygon_mode"] = EditorSettings::UsePolygonMode;
+    editor_settings_json["use_post_process"] = EditorSettings::UsePostProcess;
+    editor_settings_json["draw_gizmos"] = EditorSettings::DrawGizmos;
+    editor_settings_json["use_ibl"] = EditorSettings::UseIBL;
+    editor_settings_json["use_skybox"] = EditorSettings::UseSkybox;
+    if (EditorSettings::UseSkybox) {
+        editor_settings_json["name"] = EditorSettings::SkyboxTexture->name;
+    }
+    if (EditorSettings::UseSkybox) {
+        editor_settings_json["need_update_skybox"] = true;
+    }
+    else {
+        editor_settings_json["need_update_skybox"] = false;
+    }
+
+    sceneJson["editor_settings_json"] = editor_settings_json;
+
+    // 添加渲染管线的状态
+    nlohmann::json renderPipelineJson;
     //renderPipelineJson["shadow_map_size"] = render_pipeline.shadow_map_setting.shadow_map_size;
     //renderPipelineJson["shadow_distance"] = render_pipeline.shadow_map_setting.shadow_distance;
-    //// 添加更多的渲染管线状态...
+    // 添加更多的渲染管线状态...
 
     //sceneJson["render_pipeline"] = renderPipelineJson;
+
+
+    // 保存模型
+    nlohmann::json model_json = nlohmann::json::array();
+    auto mmp = Model::LoadedModel;
+    for (std::map<string, Model*>::iterator it = mmp.begin(); it != mmp.end(); it++)
+    {
+        nlohmann::json objectJson;
+        objectJson["name"] = it->first;
+        objectJson["directory"] = it->second->directory;
+        model_json.push_back(objectJson);
+    }
+
+    sceneJson["models"] = model_json;
+
+    // 保存贴图
+    nlohmann::json texture_json = nlohmann::json::array();
+    auto textures = Texture2D::LoadedTextures;
+    for (std::map<string, Texture2D*>::iterator it = textures.begin(); it != textures.end(); it++) {
+        nlohmann::json objectJson;
+        objectJson["id"] = it->second->id;
+        objectJson["is_editor"] = it->second->is_editor;
+        objectJson["name"] = it->first;
+        objectJson["path"] = it->second->path;
+        objectJson["tex_type"] = it->second->tex_type;
+
+        texture_json.push_back(objectJson);
+    }
+
+    sceneJson["textures"] = texture_json;
+
 
     // 将JSON对象保存到文件
     // std::ofstream file(FileSystem::FileSystem::GetContentPath() / "Scene/Scene.scene");
     std::ofstream file(_path);
-    file << sceneJson.dump(4); // 以漂亮的格式输出，缩进为4
+    file << sceneJson.dump(4); // 缩进为4
     file.close();
 }
 
@@ -96,20 +147,58 @@ void Scene::LoadScene(const std::string _path) {
     file.close();
 
     // 清除当前场景对象列表
-    scene_object_list.clear();
+    for (int i = 0; i < scene_object_list.size(); i++) {
+        if (i != 1 && i != 0) {
+            RemoveSceneObjectAtIndex(i);
+        }
+    }
+
+    // 重建模型
+    for (auto& objectJson : sceneJson["models"])
+    {
+        auto mmp = Model::LoadedModel;
+        auto it = mmp.find(objectJson["name"]);
+        if (it == mmp.end()) {
+            new Model(objectJson["directory"].get<std::string>() + "/" + objectJson["name"].get<std::string>());
+        }
+    }
+
+    // 重建贴图
+    for (auto& objectJson : sceneJson["textures"])
+    {
+        auto textures = Texture2D::LoadedTextures;
+        auto it = textures.find(objectJson["name"]);
+        if (it == textures.end()) {
+            new Texture2D(objectJson["path"].get<std::string>(), (ETexType)objectJson["tex_type"], (bool)objectJson["is_editor"]);
+        }
+    }
 
     // 从JSON中重建场景对象列表
     for (auto& objectJson : sceneJson["scene_objects"])
     {
         // 根据对象类型创建对象实例
-        SceneObject* obj;
         if (objectJson.contains("light")) {
-            obj = new SceneLight(objectJson["name"], objectJson["is_editor"]);
-            obj->Load(objectJson);
+            if (objectJson["name"].get<std::string>() == "Global Light") {
+                render_pipeline.global_light->Load(objectJson);
+            }
+            else {
+                SceneLight* obj = new SceneLight(objectJson["name"].get<std::string>(), (bool)objectJson["is_editor"]);
+                obj->Load(objectJson);
+                RegisterOtherLight(obj);
+            }
+            
         }
-        else {
-            obj = new SceneObject();
-            obj->Load(objectJson);
+        else if (objectJson.contains("model")) {
+            auto mmp = Model::LoadedModel;
+            for (std::map<string, Model*>::iterator it = mmp.begin(); it != mmp.end(); it++)
+            {
+                if (it->first == objectJson["model"]["name"].get<std::string>()) {
+                    SceneModel* obj = new SceneModel(it->second, objectJson["name"].get<std::string>(), (bool)objectJson["is_editor"]);
+                    obj->Load(objectJson);
+                    RegisterSceneObject(obj);
+                    render_pipeline.EnqueueRenderQueue(obj);
+                }
+            }
         }
         // 重建更多的属性...
 
@@ -122,19 +211,28 @@ void Scene::LoadScene(const std::string _path) {
                 // 递归重建子对象...
             }
         }
-
-        // 将对象添加到场景对象列表
-        scene_object_list.push_back(obj);
     }
 
     // 重建渲染管线的状态
-    //if (sceneJson.contains("render_pipeline"))
-    //{
-    //    json renderPipelineJson = sceneJson["render_pipeline"];
-    //    render_pipeline.shadow_map_setting.shadow_map_size = renderPipelineJson["shadow_map_size"];
-    //    render_pipeline.shadow_map_setting.shadow_distance = renderPipelineJson["shadow_distance"];
-    //    // 重建更多的渲染管线状态...
-    //}
+    // nlohmann::json renderPipelineJson = sceneJson["render_pipeline"];
+    nlohmann::json editor_settings_json = sceneJson["editor_settings_json"];
+    EditorSettings::DrawGizmos = editor_settings_json["draw_gizmos"];
+    EditorSettings::UsePolygonMode = editor_settings_json["use_polygon_mode"];
+    EditorSettings::UsePostProcess = editor_settings_json["use_post_process"];
+    EditorSettings::UseSkybox = editor_settings_json["use_skybox"];
+    if (EditorSettings::UseSkybox) {
+        if (EditorSettings::SkyboxTexture != nullptr) {
+            delete EditorSettings::SkyboxTexture;
+        }
+        EditorSettings::SkyboxTexture = Texture2D::LoadedTextures[editor_settings_json["name"].get<std::string>()];
+        EditorSettings::NeedUpdateSkybox = true;
+        EditorSettings::UseIBL = editor_settings_json["use_ibl"];
+    }
+    else {
+        EditorSettings::NeedUpdateSkybox = false;
+        EditorSettings::UseIBL = false;
+    }
+    // 重建更多的渲染管线状态...
 
     // 重建其他必要的场景状态...
 }

@@ -4,6 +4,7 @@
 #include <vector>
 #include <list>
 #include "transform.h"
+#include <nlohmann/json.hpp>
 
 class MeshRenderer;
 class SceneModel;
@@ -42,10 +43,12 @@ public:
     ATR_MaterialTexture( std::string _name, Material *_material, MaterialTexture2D *_texture );
     void UI_Implement()     override;
     ~ATR_MaterialTexture()  override = default;
+    void Save(nlohmann::json& objectJson);
+    void Load(const nlohmann::json& objectJson);
 
     unsigned int id;
     std::string slot_name = "null";
-    MaterialTexture2D *mat_tex;
+    MaterialTexture2D* mat_tex;
     Material *material;
 
 
@@ -61,11 +64,13 @@ public:
     ATR_MaterialFloat( std::string _name, Material *_material, float *_value );
     void UI_Implement()     override;
     ~ATR_MaterialFloat()    override = default;
+    void Save(nlohmann::json& objectJson);
+    void Load(const nlohmann::json& objectJson);
 
     unsigned int id;
     std::string slot_name = "null";
     float drag_speed = 0.1;
-    float *value;
+    float* value;
     Material *material;
 
 private:
@@ -78,12 +83,14 @@ public:
     ATR_MaterialInt( std::string _name, Material *_material, int *_value );
     void UI_Implement() override;
     ~ATR_MaterialInt()  override = default;
+    void Save(nlohmann::json& objectJson);
+    void Load(const nlohmann::json& objectJson);
 
-    unsigned int                    id;
-    std::string                     slot_name = "null";
-    float                           drag_speed = 1;
-    int                             *value;
-    Material                        *material;
+    unsigned int id;
+    std::string slot_name = "null";
+    float drag_speed = 1;
+    int* value;
+    Material* material;
 
 private:
     static unsigned int             cur_id;
@@ -95,12 +102,14 @@ public:
     ATR_MaterialColor(std::string _name, Material *_material, float *_value);
     void UI_Implement() override;
     ~ATR_MaterialColor() override = default;
+    void Save(nlohmann::json& objectJson);
+    void Load(const nlohmann::json& objectJson);
 
-    unsigned int                    id;
-    std::string                     slot_name = "null";
-    float                           drag_speed = 0.1;
-    float                           *value;
-    Material                        *material;
+    unsigned int id;
+    std::string slot_name = "null";
+    float drag_speed = 0.1;
+    float* value;
+    Material* material;
 
 private:
     static unsigned int             cur_id;
@@ -110,8 +119,10 @@ class ATR_Material : public Attribute
 {
 public:
     ATR_Material(Material *_material);
-    void UI_Implement()     override;
-    ~ATR_Material()    override = default;
+    void UI_Implement() override;
+    ~ATR_Material() override = default;
+    void Save(nlohmann::json& objectJson);
+    void Load(const nlohmann::json& objectJson);
 
     Material *material;
     unsigned int id;
@@ -134,6 +145,8 @@ public:
     ATR_MeshRenderer(MeshRenderer *_meshRenderer);
     void UI_Implement() override;
     ~ATR_MeshRenderer() override = default;
+    void Save(nlohmann::json& objectJson);
+    void Load(const nlohmann::json& objectJson);
 
 
     MeshRenderer* meshRenderer;
@@ -156,8 +169,9 @@ public:
     virtual float GetLinear() { return 0.09; };
     virtual float GetQuadratic() { return 0.032; };
     virtual float GetCutOff() { return glm::cos(glm::radians(12.5f)); }
-    virtual float GetOuterCutOff() { return glm::cos(glm::radians(20.5f));
-    }
+    virtual float GetOuterCutOff() { return glm::cos(glm::radians(20.5f)); }
+    virtual void Save(nlohmann::json& objectJson);
+    virtual void Load(const nlohmann::json& objectJson);
 
     int light_type = 0; // 0ÊÇdir£¬1ÊÇpoint£¬2ÊÇspot
     float drag_speed = 0.1;
@@ -191,6 +205,8 @@ public:
     float GetLinear() override { return linear; }
     float GetQuadratic() override { return quadratic; }
 
+    void Load(const nlohmann::json& objectJson) override;
+
     float constant = 1.0f;
     float linear = 0.09f;
     float quadratic = 0.032f;
@@ -211,6 +227,8 @@ public:
     float GetCutOff() override { return cutOff; }
     float GetOuterCutOff() override { return outerCutOff; }
 
+    void Load(const nlohmann::json& objectJson) override;
+
     float cutOff = glm::cos(glm::radians(12.5f));
     float outerCutOff = glm::cos(glm::radians(20.5f));
 
@@ -230,6 +248,8 @@ public:
     float GetQuadratic() { return atr_light->GetQuadratic(); };
     float GetCutOff() { return atr_light->GetCutOff(); };
     float GetOuterCutOff() { return atr_light->GetOuterCutOff(); }
+    void Save(nlohmann::json& objectJson);
+    void Load(const nlohmann::json& objectJson);
 
     unsigned int id;
 

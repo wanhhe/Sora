@@ -5,14 +5,15 @@
 #include "texture.h"
 #include "editor_content.h"
 #include "singleton_util.h"
+#include <nlohmann/json.hpp>
 
 class Shader;
 
 enum E_CULL_FACE
 {
-	culloff 		= 0,
-	cullfront 		= 1,
-	cullback 		= 2
+	culloff = 0,
+	cullfront = 1,
+	cullback = 2
 };
 
 template <class T>
@@ -79,6 +80,8 @@ public:
 	bool IsValid();
 	virtual void Setup(std::vector<Texture2D*> default_textures) = 0;
 	void OnTextureRemoved(Texture2D* removed_texture);
+	virtual void Save(nlohmann::json& objectJson);
+	virtual void Load(const nlohmann::json& objectJson);
 
 protected:
 	void DefaultSetup(std::vector<Texture2D*> default_textures);
@@ -97,6 +100,8 @@ public:
 	ModelMaterial(Texture2D* albedo);
 	~ModelMaterial() override;
 	void Setup(std::vector<Texture2D*> default_textures) override;
+	void Save(nlohmann::json& objectJson) override;
+	void Load(const nlohmann::json& objectJson) override;
 };
 
 class PBRMaterial : public Material
@@ -120,6 +125,8 @@ public:
 	PBRMaterial();
     ~PBRMaterial() override;
 	void Setup(std::vector<Texture2D*> default_textures) override;
+	void Save(nlohmann::json& objectJson) override;
+	void Load(const nlohmann::json& objectJson) override;
 };
 
 class UnlitMaterial : public Material
@@ -133,6 +140,8 @@ public:
 	UnlitMaterial();
     ~UnlitMaterial() override;
 	void Setup(std::vector<Texture2D*> default_textures) override;
+	void Save(nlohmann::json& objectJson) override;
+	void Load(const nlohmann::json& objectJson) override;
 };
 
 class NPRMaterial: public Material
@@ -146,4 +155,6 @@ public:
 	~NPRMaterial() override;
 
 	void Setup(std::vector<Texture2D*> default_textures) override;
+	void Save(nlohmann::json& objectJson) override;
+	void Load(const nlohmann::json& objectJson) override;
 };

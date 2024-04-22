@@ -1,0 +1,638 @@
+{
+    "editor_settings_json": {
+        "draw_gizmos": true,
+        "need_update_skybox": false,
+        "use_ibl": false,
+        "use_polygon_mode": false,
+        "use_post_process": true,
+        "use_skybox": false
+    },
+    "models": [
+        {
+            "directory": "G:/Sora/content/Models",
+            "name": "cube.fbx"
+        },
+        {
+            "directory": "G:/Sora/content/Models",
+            "name": "plane.obj"
+        },
+        {
+            "directory": "G:/Sora/content/Models",
+            "name": "sphere.fbx"
+        }
+    ],
+    "scene_objects": [
+        {
+            "id": 0,
+            "is_editor": true,
+            "is_selected": false,
+            "light": {
+                "atr_light_renderer": {
+                    "atr_light": {
+                        "constant": 1.0,
+                        "cut_off": 0.9762960076332092,
+                        "drag_speed": 0.10000000149011612,
+                        "light_type": 0,
+                        "linear": 0.09000000357627869,
+                        "outer_cut_off": 0.9366722106933594,
+                        "quadratic": 0.03200000151991844
+                    },
+                    "cur_id": 80001,
+                    "cur_light": 0,
+                    "id": 80000,
+                    "prev_light": 0
+                },
+                "light_color": [
+                    0.009999999776482582,
+                    0.009999999776482582,
+                    0.009999999776482582
+                ]
+            },
+            "name": "Global Light",
+            "transform": {
+                "Front": [
+                    0.0,
+                    -0.8660253882408142,
+                    -0.5000001192092896
+                ],
+                "Right": [
+                    -1.0,
+                    -0.0,
+                    0.0
+                ],
+                "Up": [
+                    0.0,
+                    -0.5000001192092896,
+                    0.8660253882408142
+                ],
+                "position": [
+                    0.0,
+                    10.0,
+                    0.0
+                ],
+                "rotation": [
+                    120.00000762939453,
+                    -0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            }
+        },
+        {
+            "id": 1,
+            "is_editor": true,
+            "is_selected": false,
+            "name": "post process manager",
+            "transform": {
+                "Front": [
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "Right": [
+                    -1.0,
+                    0.0,
+                    0.0
+                ],
+                "Up": [
+                    0.0,
+                    1.0,
+                    0.0
+                ],
+                "position": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            }
+        },
+        {
+            "atr_mesh_renderers": [
+                {
+                    "atr_material": {
+                        "atr_colors": [
+                            {
+                                "cur_id": 50001,
+                                "drag_speed": 0.10000000149011612,
+                                "id": 50000,
+                                "material": {
+                                    "albedo_map": "wall.jpg",
+                                    "ao_map": "white.png",
+                                    "ao_strength": 1.0,
+                                    "color": [
+                                        0.5833333730697632,
+                                        0.41748368740081787,
+                                        0.41748368740081787
+                                    ],
+                                    "cull_face": 0,
+                                    "cur_id": 1,
+                                    "id": 0,
+                                    "metal_map": "white.png",
+                                    "metal_strength": 0.0,
+                                    "name": "PBR Material",
+                                    "normal_map": "normal.png",
+                                    "normal_strength": 1.0,
+                                    "roughness_map": "white.png",
+                                    "roughness_strength": 1.0,
+                                    "shadow_strength": 1.0
+                                },
+                                "slot_name": "color",
+                                "value": 0.5833333730697632
+                            }
+                        ],
+                        "atr_floats": [
+                            {
+                                "cur_id": 30005,
+                                "drag_speed": 0.10000000149011612,
+                                "id": 30000,
+                                "material": {
+                                    "albedo_map": "wall.jpg",
+                                    "ao_map": "white.png",
+                                    "ao_strength": 1.0,
+                                    "color": [
+                                        0.5833333730697632,
+                                        0.41748368740081787,
+                                        0.41748368740081787
+                                    ],
+                                    "cull_face": 0,
+                                    "cur_id": 1,
+                                    "id": 0,
+                                    "metal_map": "white.png",
+                                    "metal_strength": 0.0,
+                                    "name": "PBR Material",
+                                    "normal_map": "normal.png",
+                                    "normal_strength": 1.0,
+                                    "roughness_map": "white.png",
+                                    "roughness_strength": 1.0,
+                                    "shadow_strength": 1.0
+                                },
+                                "slot_name": "normalStrength",
+                                "value": 1.0
+                            },
+                            {
+                                "cur_id": 30005,
+                                "drag_speed": 0.10000000149011612,
+                                "id": 30001,
+                                "material": {
+                                    "albedo_map": "wall.jpg",
+                                    "ao_map": "white.png",
+                                    "ao_strength": 1.0,
+                                    "color": [
+                                        0.5833333730697632,
+                                        0.41748368740081787,
+                                        0.41748368740081787
+                                    ],
+                                    "cull_face": 0,
+                                    "cur_id": 1,
+                                    "id": 0,
+                                    "metal_map": "white.png",
+                                    "metal_strength": 0.0,
+                                    "name": "PBR Material",
+                                    "normal_map": "normal.png",
+                                    "normal_strength": 1.0,
+                                    "roughness_map": "white.png",
+                                    "roughness_strength": 1.0,
+                                    "shadow_strength": 1.0
+                                },
+                                "slot_name": "aoStrength",
+                                "value": 1.0
+                            },
+                            {
+                                "cur_id": 30005,
+                                "drag_speed": 0.10000000149011612,
+                                "id": 30002,
+                                "material": {
+                                    "albedo_map": "wall.jpg",
+                                    "ao_map": "white.png",
+                                    "ao_strength": 1.0,
+                                    "color": [
+                                        0.5833333730697632,
+                                        0.41748368740081787,
+                                        0.41748368740081787
+                                    ],
+                                    "cull_face": 0,
+                                    "cur_id": 1,
+                                    "id": 0,
+                                    "metal_map": "white.png",
+                                    "metal_strength": 0.0,
+                                    "name": "PBR Material",
+                                    "normal_map": "normal.png",
+                                    "normal_strength": 1.0,
+                                    "roughness_map": "white.png",
+                                    "roughness_strength": 1.0,
+                                    "shadow_strength": 1.0
+                                },
+                                "slot_name": "roughnessStrength",
+                                "value": 1.0
+                            },
+                            {
+                                "cur_id": 30005,
+                                "drag_speed": 0.10000000149011612,
+                                "id": 30003,
+                                "material": {
+                                    "albedo_map": "wall.jpg",
+                                    "ao_map": "white.png",
+                                    "ao_strength": 1.0,
+                                    "color": [
+                                        0.5833333730697632,
+                                        0.41748368740081787,
+                                        0.41748368740081787
+                                    ],
+                                    "cull_face": 0,
+                                    "cur_id": 1,
+                                    "id": 0,
+                                    "metal_map": "white.png",
+                                    "metal_strength": 0.0,
+                                    "name": "PBR Material",
+                                    "normal_map": "normal.png",
+                                    "normal_strength": 1.0,
+                                    "roughness_map": "white.png",
+                                    "roughness_strength": 1.0,
+                                    "shadow_strength": 1.0
+                                },
+                                "slot_name": "metalStrength",
+                                "value": 0.0
+                            },
+                            {
+                                "cur_id": 30005,
+                                "drag_speed": 0.10000000149011612,
+                                "id": 30004,
+                                "material": {
+                                    "albedo_map": "wall.jpg",
+                                    "ao_map": "white.png",
+                                    "ao_strength": 1.0,
+                                    "color": [
+                                        0.5833333730697632,
+                                        0.41748368740081787,
+                                        0.41748368740081787
+                                    ],
+                                    "cull_face": 0,
+                                    "cur_id": 1,
+                                    "id": 0,
+                                    "metal_map": "white.png",
+                                    "metal_strength": 0.0,
+                                    "name": "PBR Material",
+                                    "normal_map": "normal.png",
+                                    "normal_strength": 1.0,
+                                    "roughness_map": "white.png",
+                                    "roughness_strength": 1.0,
+                                    "shadow_strength": 1.0
+                                },
+                                "slot_name": "shadowStrength",
+                                "value": 1.0
+                            }
+                        ],
+                        "atr_ints": [],
+                        "atr_textures": [
+                            {
+                                "cur_id": 20005,
+                                "id": 20000,
+                                "mat_tex": {
+                                    "name": "wall.jpg",
+                                    "offset": [
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "tilling": [
+                                        1.0,
+                                        1.0
+                                    ]
+                                },
+                                "material": {
+                                    "albedo_map": "wall.jpg",
+                                    "ao_map": "white.png",
+                                    "ao_strength": 1.0,
+                                    "color": [
+                                        0.5833333730697632,
+                                        0.41748368740081787,
+                                        0.41748368740081787
+                                    ],
+                                    "cull_face": 0,
+                                    "cur_id": 1,
+                                    "id": 0,
+                                    "metal_map": "white.png",
+                                    "metal_strength": 0.0,
+                                    "name": "PBR Material",
+                                    "normal_map": "normal.png",
+                                    "normal_strength": 1.0,
+                                    "roughness_map": "white.png",
+                                    "roughness_strength": 1.0,
+                                    "shadow_strength": 1.0
+                                },
+                                "offset": [
+                                    0.0,
+                                    0.0
+                                ],
+                                "slot_name": "albedo_map",
+                                "tilling": [
+                                    1.0,
+                                    1.0
+                                ]
+                            },
+                            {
+                                "cur_id": 20005,
+                                "id": 20001,
+                                "mat_tex": {
+                                    "name": "normal.png",
+                                    "offset": [
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "tilling": [
+                                        1.0,
+                                        1.0
+                                    ]
+                                },
+                                "material": {
+                                    "albedo_map": "wall.jpg",
+                                    "ao_map": "white.png",
+                                    "ao_strength": 1.0,
+                                    "color": [
+                                        0.5833333730697632,
+                                        0.41748368740081787,
+                                        0.41748368740081787
+                                    ],
+                                    "cull_face": 0,
+                                    "cur_id": 1,
+                                    "id": 0,
+                                    "metal_map": "white.png",
+                                    "metal_strength": 0.0,
+                                    "name": "PBR Material",
+                                    "normal_map": "normal.png",
+                                    "normal_strength": 1.0,
+                                    "roughness_map": "white.png",
+                                    "roughness_strength": 1.0,
+                                    "shadow_strength": 1.0
+                                },
+                                "offset": [
+                                    0.0,
+                                    0.0
+                                ],
+                                "slot_name": "normal_map",
+                                "tilling": [
+                                    1.0,
+                                    1.0
+                                ]
+                            },
+                            {
+                                "cur_id": 20005,
+                                "id": 20002,
+                                "mat_tex": {
+                                    "name": "white.png",
+                                    "offset": [
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "tilling": [
+                                        1.0,
+                                        1.0
+                                    ]
+                                },
+                                "material": {
+                                    "albedo_map": "wall.jpg",
+                                    "ao_map": "white.png",
+                                    "ao_strength": 1.0,
+                                    "color": [
+                                        0.5833333730697632,
+                                        0.41748368740081787,
+                                        0.41748368740081787
+                                    ],
+                                    "cull_face": 0,
+                                    "cur_id": 1,
+                                    "id": 0,
+                                    "metal_map": "white.png",
+                                    "metal_strength": 0.0,
+                                    "name": "PBR Material",
+                                    "normal_map": "normal.png",
+                                    "normal_strength": 1.0,
+                                    "roughness_map": "white.png",
+                                    "roughness_strength": 1.0,
+                                    "shadow_strength": 1.0
+                                },
+                                "offset": [
+                                    0.0,
+                                    0.0
+                                ],
+                                "slot_name": "ao_map",
+                                "tilling": [
+                                    1.0,
+                                    1.0
+                                ]
+                            },
+                            {
+                                "cur_id": 20005,
+                                "id": 20003,
+                                "mat_tex": {
+                                    "name": "white.png",
+                                    "offset": [
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "tilling": [
+                                        1.0,
+                                        1.0
+                                    ]
+                                },
+                                "material": {
+                                    "albedo_map": "wall.jpg",
+                                    "ao_map": "white.png",
+                                    "ao_strength": 1.0,
+                                    "color": [
+                                        0.5833333730697632,
+                                        0.41748368740081787,
+                                        0.41748368740081787
+                                    ],
+                                    "cull_face": 0,
+                                    "cur_id": 1,
+                                    "id": 0,
+                                    "metal_map": "white.png",
+                                    "metal_strength": 0.0,
+                                    "name": "PBR Material",
+                                    "normal_map": "normal.png",
+                                    "normal_strength": 1.0,
+                                    "roughness_map": "white.png",
+                                    "roughness_strength": 1.0,
+                                    "shadow_strength": 1.0
+                                },
+                                "offset": [
+                                    0.0,
+                                    0.0
+                                ],
+                                "slot_name": "roughness_map",
+                                "tilling": [
+                                    1.0,
+                                    1.0
+                                ]
+                            },
+                            {
+                                "cur_id": 20005,
+                                "id": 20004,
+                                "mat_tex": {
+                                    "name": "white.png",
+                                    "offset": [
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "tilling": [
+                                        1.0,
+                                        1.0
+                                    ]
+                                },
+                                "material": {
+                                    "albedo_map": "wall.jpg",
+                                    "ao_map": "white.png",
+                                    "ao_strength": 1.0,
+                                    "color": [
+                                        0.5833333730697632,
+                                        0.41748368740081787,
+                                        0.41748368740081787
+                                    ],
+                                    "cull_face": 0,
+                                    "cur_id": 1,
+                                    "id": 0,
+                                    "metal_map": "white.png",
+                                    "metal_strength": 0.0,
+                                    "name": "PBR Material",
+                                    "normal_map": "normal.png",
+                                    "normal_strength": 1.0,
+                                    "roughness_map": "white.png",
+                                    "roughness_strength": 1.0,
+                                    "shadow_strength": 1.0
+                                },
+                                "offset": [
+                                    0.0,
+                                    0.0
+                                ],
+                                "slot_name": "metal_map",
+                                "tilling": [
+                                    1.0,
+                                    1.0
+                                ]
+                            }
+                        ],
+                        "atr_vec3s": [],
+                        "cull_current": 0,
+                        "cur_id": 10001,
+                        "id": 10000,
+                        "material": {
+                            "albedo_map": "wall.jpg",
+                            "ao_map": "white.png",
+                            "ao_strength": 1.0,
+                            "color": [
+                                0.5833333730697632,
+                                0.41748368740081787,
+                                0.41748368740081787
+                            ],
+                            "cull_face": 0,
+                            "cur_id": 1,
+                            "id": 0,
+                            "metal_map": "white.png",
+                            "metal_strength": 0.0,
+                            "name": "PBR Material",
+                            "normal_map": "normal.png",
+                            "normal_strength": 1.0,
+                            "roughness_map": "white.png",
+                            "roughness_strength": 1.0,
+                            "shadow_strength": 1.0
+                        }
+                    },
+                    "cur_id": 70001,
+                    "cur_mat": 1,
+                    "id": 70000,
+                    "prev_mat": 1
+                }
+            ],
+            "id": 2,
+            "is_editor": false,
+            "is_selected": true,
+            "model": {
+                "directory": "G:/Sora/content/Models",
+                "name": "sphere.fbx"
+            },
+            "name": "sphere",
+            "transform": {
+                "Front": [
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "Right": [
+                    -1.0,
+                    0.0,
+                    0.0
+                ],
+                "Up": [
+                    0.0,
+                    1.0,
+                    0.0
+                ],
+                "position": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            }
+        }
+    ],
+    "textures": [
+        {
+            "id": 9,
+            "is_editor": true,
+            "name": "file_ico.png",
+            "path": "G:/Sora/editor/ico/file_ico.png",
+            "tex_type": 4
+        },
+        {
+            "id": 8,
+            "is_editor": true,
+            "name": "folder_ico.png",
+            "path": "G:/Sora/editor/ico/folder_ico.png",
+            "tex_type": 4
+        },
+        {
+            "id": 5,
+            "is_editor": true,
+            "name": "normal.png",
+            "path": "G:/Sora/content/Textures/normal.png",
+            "tex_type": 2
+        },
+        {
+            "id": 6,
+            "is_editor": false,
+            "name": "wall.jpg",
+            "path": "G:/Sora/content/Textures/wall.jpg",
+            "tex_type": 3
+        },
+        {
+            "id": 7,
+            "is_editor": true,
+            "name": "white.png",
+            "path": "G:/Sora/content/Textures/white.png",
+            "tex_type": 4
+        }
+    ]
+}

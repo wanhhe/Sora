@@ -66,14 +66,12 @@ SceneModel::SceneModel(Model *_model, bool _is_editor) : model(_model)
         Material* material;
         if (_model->meshes[i]->textures.size() > 0)
         {
-            // material = new ModelMaterial(Shader::LoadedShaders["model.fs"], _model->meshes[i]->textures[0]);
             material = MaterialManager::CreateMaterialByType(PBR_MATERIAL);
             PBRMaterial* tmp = dynamic_cast<PBRMaterial*>(material);
             material->SetTexture(&tmp->albedo_map, _model->meshes[i]->textures[0]);
         }
         else
         {
-            // material = new ModelMaterial(Shader::LoadedShaders["model.fs"]);
             material = MaterialManager::CreateMaterialByType(PBR_MATERIAL);
         }
         MeshRenderer* _meshRenderer = new MeshRenderer(material, _model->meshes[i]);
@@ -115,13 +113,26 @@ void SceneModel::DrawSceneModel()
 void SceneModel::Save(nlohmann::json& objectJson) {
     SceneObject::Save(objectJson);
 
+    nlohmann::json model_json;
+    model_json["directory"] = model->directory;
+    model_json["name"] = model->name;
+    objectJson["model"] = model_json;
 
+    nlohmann::json atr_mesh_render_json = nlohmann::json::array();
+    for (int i = 0; i < atr_meshRenderers.size(); i++) {
+        nlohmann::json render_json;
+        atr_meshRenderers[i]->Save(render_json);
+        atr_mesh_render_json.push_back(render_json);
+    }
+    objectJson["atr_mesh_renderers"] = atr_mesh_render_json;
 }
 
 void SceneModel::Load(const nlohmann::json& objectJson) {
     SceneObject::Load(objectJson);
 
-
+    for (int i = 0; i < atr_meshRenderers.size(); i++) {
+        atr_meshRenderers[i]->Load(objectJson["atr_mesh_renderers"][i].get<nlohmann::json>());
+    }
 }
 
 SceneModel::~SceneModel() 
@@ -163,20 +174,21 @@ void SceneLight::Save(nlohmann::json& objectJson) {
     SceneObject::Save(objectJson);
 
     nlohmann::json lightJson;
-    // lightJson["light drag_speed"] = light->drag_speed;
-    // lightJson["light color"] = { light->color[0], light->color[1], light->color[2] };
+    lightJson["light_color"] = { light_color[0], light_color[1], light_color[2] };
+    nlohmann::json atr_light_renderer;
+    atr_lightRenderer->Save(atr_light_renderer);
+    lightJson["atr_light_renderer"] = atr_light_renderer;
 
     objectJson["light"] = lightJson;
-
 }
 
 void SceneLight::Load(const nlohmann::json& objectJson) {
     SceneObject::Load(objectJson);
+    atr_lightRenderer->Load(objectJson["light"]["atr_light_renderer"].get<nlohmann::json>());
 
-    // light->drag_speed = objectJson["light"]["light drag_speed"];
-    // light->color[0] = objectJson["light"]["light color"][0];
-    // light->color[1] = objectJson["light"]["light color"][1];
-    // light->color[2] = objectJson["light"]["light color"][2];
+    light_color[0] = objectJson["light"]["light_color"][0];
+    light_color[1] = objectJson["light"]["light_color"][1];
+    light_color[2] = objectJson["light"]["light_color"][2];
 }
 
 SceneLight::~SceneLight() {}

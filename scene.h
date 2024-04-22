@@ -12,7 +12,7 @@ class Scene
 {
 public:
     std::vector<SceneObject*>  scene_object_list;
-    RenderPipeline              render_pipeline;
+    RenderPipeline render_pipeline;
 
 public:
     Scene(RendererWindow* window);

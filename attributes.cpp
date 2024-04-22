@@ -118,6 +118,44 @@ void ATR_MaterialTexture::UI_Implement()
     mat_tex->offset.r = offset[0];   mat_tex->offset.g = offset[1];
 }
 
+void ATR_MaterialTexture::Save(nlohmann::json& objectJson) {
+    objectJson["id"] = id;
+    objectJson["slot_name"] = slot_name;
+    objectJson["cur_id"] = cur_id;
+    objectJson["tilling"] = { tilling[0], tilling[1] };
+    objectJson["offset"] = { offset[0], offset[1] };
+
+    nlohmann::json material_json;
+    material->Save(material_json);
+    objectJson["material"] = material_json;
+
+    nlohmann::json mat_tex_json;
+    mat_tex_json["name"] = (*mat_tex->texture)->name;
+    mat_tex_json["tilling"] = { mat_tex->tilling[0], mat_tex->tilling[1] };
+    mat_tex_json["offset"] = { mat_tex->offset[0], mat_tex->offset[1] };
+    objectJson["mat_tex"] = mat_tex_json;
+}
+
+void ATR_MaterialTexture::Load(const nlohmann::json& objectJson) {
+    id = objectJson["id"];
+    slot_name = objectJson["slot_name"];
+    cur_id = objectJson["cur_id"];
+    tilling[0] = objectJson["tilling"][0];
+    tilling[1] = objectJson["tilling"][1];
+    offset[0] = objectJson["offset"][0];
+    offset[1] = objectJson["offset"][1];
+
+    nlohmann::json material_json = objectJson["material"];
+    material->Load(material_json);
+
+    nlohmann::json mat_tex_json = objectJson["mat_tex"];
+    mat_tex->tilling[0] = mat_tex_json["tilling"][0];
+    mat_tex->tilling[1] = mat_tex_json["tilling"][1];
+    mat_tex->offset[0] = mat_tex_json["offset"][0];
+    mat_tex->offset[1] = mat_tex_json["offset"][1];
+    material->SetTexture(mat_tex->texture, Texture2D::LoadedTextures[mat_tex_json["name"]]);
+}
+
 ATR_MaterialFloat::ATR_MaterialFloat(std::string _name, Material *_material, float *_value) :   slot_name(_name), 
                                                                                                 material(_material), 
                                                                                                 value(_value)
@@ -129,6 +167,28 @@ void ATR_MaterialFloat::UI_Implement()
 {
     std::string item = slot_name + "##" + std::to_string(material->id) + std::to_string(id);
     ImGui::DragFloat(item.c_str(), value, drag_speed);
+}
+
+void ATR_MaterialFloat::Save(nlohmann::json& objectJson) {
+    objectJson["id"] = id;
+    objectJson["slot_name"] = slot_name;
+    objectJson["drag_speed"] = drag_speed;
+    objectJson["cur_id"] = cur_id;
+    objectJson["value"] = *value;
+    nlohmann::json material_json;
+    material->Save(material_json);
+    objectJson["material"] = material_json;
+}
+
+void ATR_MaterialFloat::Load(const nlohmann::json& objectJson) {
+    id = objectJson["id"];
+    slot_name = objectJson["slot_name"];
+    drag_speed = objectJson["drag_speed"];
+    cur_id = objectJson["cur_id"];
+    *value = objectJson["value"];
+
+    nlohmann::json material_json = objectJson["material"];
+    material->Load(material_json);
 }
 
 ATR_MaterialInt::ATR_MaterialInt(std::string _name, Material *_material, int *_value) :     slot_name(_name), 
@@ -144,6 +204,29 @@ void ATR_MaterialInt::UI_Implement()
     ImGui::DragInt(item.c_str(), value, drag_speed);
 }
 
+void ATR_MaterialInt::Save(nlohmann::json& objectJson) {
+    objectJson["id"] = id;
+    objectJson["slot_name"] = slot_name;
+    objectJson["drag_speed"] = drag_speed;
+    objectJson["cur_id"] = cur_id;
+    objectJson["value"] = *value;
+
+    nlohmann::json material_json;
+    material->Save(material_json);
+    objectJson["material"] = material_json;
+}
+
+void ATR_MaterialInt::Load(const nlohmann::json& objectJson) {
+    id = objectJson["id"];
+    slot_name = objectJson["slot_name"];
+    drag_speed = objectJson["drag_speed"];
+    cur_id = objectJson["cur_id"];
+    *value = objectJson["value"];
+
+    nlohmann::json material_json = objectJson["material"];
+    material->Load(material_json);
+}
+
 ATR_MaterialColor::ATR_MaterialColor(std::string _name, Material *_material, float *_value) :   slot_name(_name), 
                                                                                                 material(_material), 
                                                                                                 value(_value)
@@ -157,8 +240,33 @@ void ATR_MaterialColor::UI_Implement()
     ImGui::ColorEdit3(item.c_str(), value);
 }
 
+void ATR_MaterialColor::Save(nlohmann::json& objectJson) {
+    objectJson["id"] = id;
+    objectJson["slot_name"] = slot_name;
+    objectJson["drag_speed"] = drag_speed;
+    objectJson["cur_id"] = cur_id;
+    objectJson["value"] = { value[0], value[1], value[2] };
 
-ATR_Material::ATR_Material(Material *_material) : material(_material)
+    nlohmann::json material_json;
+    material->Save(material_json);
+    objectJson["material"] = material_json;
+}
+
+void ATR_MaterialColor::Load(const nlohmann::json& objectJson) {
+    id = objectJson["id"];
+    slot_name = objectJson["slot_name"];
+    drag_speed = objectJson["drag_speed"];
+    cur_id = objectJson["cur_id"];
+    value[0] = objectJson["value"][0];
+    value[1] = objectJson["value"][1];
+    value[2] = objectJson["value"][2];
+
+    nlohmann::json material_json = objectJson["material"];
+    material->Load(material_json);
+}
+
+
+ATR_Material::ATR_Material(Material* _material) : material(_material)
 {
     for (int i = 0; i < _material->material_variables.allTextures.size(); i++)
     {
@@ -195,6 +303,7 @@ ATR_Material::ATR_Material(Material *_material) : material(_material)
     id = cur_id++;
 }
 
+
 void ATR_Material::UI_Implement()
 {
     ImGui::Text("Material Info:");
@@ -230,8 +339,89 @@ void ATR_Material::UI_Implement()
     }
 }
 
+void ATR_Material::Save(nlohmann::json& objectJson) {
+    objectJson["id"] = id;
+    objectJson["cur_id"] = cur_id;
+    objectJson["cull_current"] = cull_current;
+
+    nlohmann::json atr_vec3s_json = nlohmann::json::array();
+    for (int i = 0; i < atr_vec3s.size(); i++) {
+        nlohmann::json vec3_json;
+        vec3_json["atr_vec3"] = { atr_vec3s[i][0], atr_vec3s[i][1], atr_vec3s[i][2]};
+        atr_vec3s_json.push_back(vec3_json);
+    }
+    objectJson["atr_vec3s"] = atr_vec3s_json;
+
+    nlohmann::json atr_textures_json = nlohmann::json::array();
+    for (int i = 0; i < atr_textures.size(); i++) {
+        nlohmann::json texture_json;
+        atr_textures[i]->Save(texture_json);
+        atr_textures_json.push_back(texture_json);
+    }
+    objectJson["atr_textures"] = atr_textures_json;
+
+    nlohmann::json atr_ints_json = nlohmann::json::array();
+    for (int i = 0; i < atr_ints.size(); i++) {
+        nlohmann::json int_json;
+        atr_ints[i]->Save(int_json);
+        atr_ints_json.push_back(int_json);
+    }
+    objectJson["atr_ints"] = atr_ints_json;
+
+    nlohmann::json atr_floats_json = nlohmann::json::array();
+    for (int i = 0; i < atr_floats.size(); i++) {
+        nlohmann::json float_json;
+        atr_floats[i]->Save(float_json);
+        atr_floats_json.push_back(float_json);
+    }
+    objectJson["atr_floats"] = atr_floats_json;
+
+    nlohmann::json atr_colors_json = nlohmann::json::array();
+    for (int i = 0; i < atr_colors.size(); i++) {
+        nlohmann::json color_json;
+        atr_colors[i]->Save(color_json);
+        atr_colors_json.push_back(color_json);
+    }
+    objectJson["atr_colors"] = atr_colors_json;
+
+    nlohmann::json material_json;
+    material->Save(material_json);
+    objectJson["material"] = material_json;
+}
+
+void ATR_Material::Load(const nlohmann::json& objectJson) {
+    id = objectJson["id"];
+    cur_id = objectJson["cur_id"];
+    cull_current = objectJson["cull_current"];
+
+    for (int i = 0; i < atr_ints.size(); i++) {
+        atr_ints[i]->Load(objectJson["atr_ints"][i].get<nlohmann::json>());
+    }
+
+    for (int i = 0; i < atr_floats.size(); i++) {
+        atr_floats[i]->Load(objectJson["atr_floats"][i].get<nlohmann::json>());
+    }
+
+    for (int i = 0; i < atr_colors.size(); i++) {
+        atr_colors[i]->Load(objectJson["atr_colors"][i].get<nlohmann::json>());
+    }
+
+    for (int i = 0; i < atr_vec3s.size(); i++) {
+        atr_vec3s[i][0] = objectJson["atr_vec3s"][i][0];
+        atr_vec3s[i][1] = objectJson["atr_vec3s"][i][1];
+        atr_vec3s[i][2] = objectJson["atr_vec3s"][i][2];
+    }
+
+    for (int i = 0; i < atr_textures.size(); i++) {
+        atr_textures[i]->Load(objectJson["atr_textures"][i].get<nlohmann::json>());
+    }
+
+    material->Load(objectJson["material"]);
+}
+
 ATR_MeshRenderer::ATR_MeshRenderer(MeshRenderer *_meshRenderer) : meshRenderer(_meshRenderer)
 {
+    std::cout << "new" << std::endl;
     atr_material = new ATR_Material(_meshRenderer->material);
     id = cur_id++;
 }
@@ -265,6 +455,32 @@ void ATR_MeshRenderer::UI_Implement()
 
         atr_material->UI_Implement();
     }
+}
+
+void ATR_MeshRenderer::Save(nlohmann::json& objectJson) {
+    objectJson["id"] = id;
+    objectJson["cur_id"] = cur_id;
+    objectJson["prev_mat"] = prev_mat;
+    objectJson["cur_mat"] = cur_mat;
+
+    nlohmann::json atr_material_json;
+    atr_material->Save(atr_material_json);
+    objectJson["atr_material"] = atr_material_json;
+}
+
+void ATR_MeshRenderer::Load(const nlohmann::json& objectJson) {
+    id = objectJson["id"];
+    cur_id = objectJson["cur_id"];
+    cur_mat = objectJson["cur_mat"];*
+    if (prev_mat != cur_mat) {
+        meshRenderer->SetMaterial((EMaterialType)cur_mat);
+        std::cout << cur_mat << std::endl;
+        delete atr_material;
+        atr_material = new ATR_Material(meshRenderer->material);
+    }
+    prev_mat = cur_mat;
+
+    atr_material->Load(objectJson["atr_material"].get<nlohmann::json>());
 }
 
 ATR_LightRenderer::ATR_LightRenderer(float* _color)
@@ -323,11 +539,43 @@ void ATR_LightRenderer::UI_Implement()
     }
 }
 
+void ATR_LightRenderer::Save(nlohmann::json& objectJson) {
+    objectJson["id"] = id;
+    objectJson["prev_light"] = prev_light;
+    objectJson["cur_light"] = cur_light;
+    objectJson["cur_id"] = cur_id;
+    nlohmann::json atr_light_json;
+    atr_light->Save(atr_light_json);
+    objectJson["atr_light"] = atr_light_json;
+}
+
+void ATR_LightRenderer::Load(const nlohmann::json& objectJson) {
+    id = objectJson["id"];
+    prev_light = objectJson["prev_light"];
+    cur_light = objectJson["cur_light"];
+    cur_id = objectJson["cur_id"];
+    atr_light->Load(objectJson["atr_light"]);
+}
+
 ATR_Light::ATR_Light(float* _color): color(_color) {}
 
 void ATR_Light::UI_Implement()
 {
     ImGui::ColorEdit4("Light Color", color);
+}
+
+void ATR_Light::Save(nlohmann::json& objectJson) {
+    objectJson["light_type"] = light_type;
+    objectJson["drag_speed"] = drag_speed;
+    objectJson["constant"] = GetConstant();
+    objectJson["linear"] = GetLinear();
+    objectJson["quadratic"] = GetQuadratic();
+    objectJson["cut_off"] = GetCutOff();
+    objectJson["outer_cut_off"] = GetOuterCutOff();
+}
+void ATR_Light::Load(const nlohmann::json& objectJson) {
+    light_type = objectJson["light_type"];
+    drag_speed = objectJson["drag_speed"];
 }
 
 ATR_DirLight::ATR_DirLight(float* _color) : ATR_Light(_color) { light_type = 0; }
@@ -363,6 +611,13 @@ void ATR_PointLight::UI_Implement() {
     ImGui::DragFloat("Quadratic", &quadratic, 0.001f, 0.0075f, 3.0f);
 }
 
+void ATR_PointLight::Load(const nlohmann::json& objectJson) {
+    ATR_Light::Load(objectJson);
+    constant = objectJson["constant"];
+    linear = objectJson["linear"];
+    quadratic = objectJson["quadratic"];
+}
+
 ATR_DirLight* ATR_PointLight::TransformDirLight() {
     return new ATR_DirLight(color);
 }
@@ -384,6 +639,15 @@ ATR_SpotLight::ATR_SpotLight(float* _color, float _constant, float _linear, floa
     constant = _constant;
     linear = _linear;
     quadratic = _quadratic;
+}
+
+void ATR_SpotLight::Load(const nlohmann::json& objectJson) {
+    ATR_Light::Load(objectJson);
+    constant = objectJson["constant"];
+    linear = objectJson["linear"];
+    quadratic = objectJson["quadratic"];
+    cutOff = objectJson["cut_off"];
+    outerCutOff = objectJson["outer_cut_off"];
 }
 
 ATR_DirLight* ATR_SpotLight::TransformDirLight() {
