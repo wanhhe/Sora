@@ -63,6 +63,15 @@ private:
     RenderTexture *pingpong_buffer[2];
 };
 
+class HDRProcess : public PostProcess
+{
+public:
+    HDRProcess(RenderTexture* _rrt, RenderTexture* _wrt, Shader* _shader, std::string _name, bool _enabled = true);
+    ~HDRProcess();
+    void Execute(unsigned int quad) override;
+    float exposure1 = 1;
+};
+
 class SSAOProcess : public PostProcess
 {
 public:

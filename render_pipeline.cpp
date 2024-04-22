@@ -120,9 +120,9 @@ void RenderPipeline::OnWindowSizeChanged(int width, int height)
 **********************/
 void RenderPipeline::ProcessShadowPass()
 {
+    shadow_map->BindFrameBuffer();
     glViewport(0, 0, shadow_map_setting.shadow_map_size, shadow_map_setting.shadow_map_size);
     glEnable(GL_DEPTH_TEST);
-    shadow_map->BindFrameBuffer();
     glClear(GL_DEPTH_BUFFER_BIT);
     GLfloat near_plane = 0.1f, far_plane = 100.0f;
     float sdm_size = shadow_map_setting.shadow_distance;
@@ -165,9 +165,9 @@ void RenderPipeline::ProcessShadowPass()
 **********************/
 void RenderPipeline::ProcessZPrePass()
 {
+    depth_texture->BindFrameBuffer();
     glViewport(0, 0, window->Width(), window->Height());
     glEnable(GL_DEPTH_TEST);
-    depth_texture->BindFrameBuffer();
     glClear(GL_DEPTH_BUFFER_BIT);
     // view/projection transformations
     Camera* camera = window->render_camera;
@@ -193,6 +193,7 @@ void RenderPipeline::ProcessZPrePass()
         }
 
     }
+
     FrameBufferTexture::ClearBufferBinding();
 }
 
@@ -257,6 +258,7 @@ void RenderPipeline::ProcessNormalPass()
             sm->meshRenderers[i]->PureDraw();
         }
     }
+
     FrameBufferTexture::ClearBufferBinding();
 }
 

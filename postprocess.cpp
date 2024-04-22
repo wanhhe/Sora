@@ -125,14 +125,17 @@ void PostProcessManager::ExecutePostProcessList()
         switch (EditorSettings::CurrentRenderBuffer)
         {
         case EGBuffer::Fragpos :
+            default_framebuffer_shader->setBool("isDepth", false);
             glBindTexture(GL_TEXTURE_2D, RenderPipeline::fragpos_texture->color_buffer);
             break;
 
         case EGBuffer::Depth :
+            default_framebuffer_shader->setBool("isDepth", true);
             glBindTexture(GL_TEXTURE_2D, RenderPipeline::depth_texture->color_buffer);
             break;
         
         case EGBuffer::Normal :
+            default_framebuffer_shader->setBool("isDepth", false);
             glBindTexture(GL_TEXTURE_2D, RenderPipeline::normal_texture->color_buffer);
             break;
 
@@ -202,11 +205,9 @@ BloomProcess::BloomProcess(RenderTexture *_rrt, RenderTexture *_wrt, Shader *_sh
     pingpong_buffer[0] = new RenderTexture(_rrt->width, _rrt->height);
     pingpong_buffer[1] = new RenderTexture(_rrt->width, _rrt->height);
     filter_shader = new Shader( FileSystem::GetContentPath() / "Shader/framebuffer.vs",
-                                FileSystem::GetContentPath() / "Shader/brightFilter.fs",
-                                true);
+                                FileSystem::GetContentPath() / "Shader/brightFilter.fs", true);
     gaussblur_shader = new Shader( FileSystem::GetContentPath() / "Shader/framebuffer.vs",
-                                FileSystem::GetContentPath() / "Shader/gaussBlur.fs",
-                                true);
+                                FileSystem::GetContentPath() / "Shader/gaussBlur.fs", true);
 
     filter_shader->LoadShader();
     gaussblur_shader->LoadShader();
@@ -234,7 +235,6 @@ void BloomProcess::OnRenderAreaResized(int x, int y)
     delete pingpong_buffer[1];
     pingpong_buffer[0] = new RenderTexture(x, y);
     pingpong_buffer[1] = new RenderTexture(x, y);
-    
 }
 
 /****************************************
@@ -293,6 +293,35 @@ void BloomProcess::Execute(unsigned int quad)
     glBindTexture(GL_TEXTURE_2D, pingpong_buffer[1]->color_buffer);
     glActiveTexture(GL_TEXTURE0);
 
+    glDrawArrays(GL_TRIANGLES, 0, 6);
+    glBindVertexArray(0);
+
+    EndRender();
+}
+
+HDRProcess::HDRProcess(RenderTexture* _rrt, RenderTexture* _wrt, Shader* _shader, std::string _name, bool _enabled) : PostProcess(_rrt, _wrt, _shader, _name, _enabled)
+{
+    atr_ppn = new ATR_HDRProcessNode(this);
+
+    // screenTexture被绑定到了GL_TEXTURE_2D目标，但没有指定纹理单元。由于默认情况下GL_TEXTURE0是激活的，所以screenTexture会被绑定到这个默认的纹理单元。
+    // 因此，即使没有明确设置，着色器也能正确采样到纹理。
+}
+
+HDRProcess::~HDRProcess()
+{
+    delete atr_ppn;
+}
+
+void HDRProcess::Execute(unsigned int quad)
+{
+    // Get camera texture and render to 
+    BeiginRender();
+
+    shader->use();
+    glBindVertexArray(quad);
+    glDisable(GL_DEPTH_TEST);
+    glBindTexture(GL_TEXTURE_2D, read_rt->color_buffer);
+    shader->setFloat("exposure", exposure1);
     glDrawArrays(GL_TRIANGLES, 0, 6);
     glBindVertexArray(0);
 

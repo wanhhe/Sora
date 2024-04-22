@@ -282,6 +282,14 @@ public:
     virtual ~ATR_BloomProcessNode()      override;
 };
 
+class ATR_HDRProcessNode : public ATR_PostProcessNode
+{
+public:
+    ATR_HDRProcessNode(PostProcess* _postprocess);
+    virtual void UI_Implement() override;
+    virtual ~ATR_HDRProcessNode() override;
+};
+
 class PostProcessManager;
 class ATR_PostProcessManager : public Attribute
 {

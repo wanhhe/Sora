@@ -471,7 +471,7 @@ void ATR_MeshRenderer::Save(nlohmann::json& objectJson) {
 void ATR_MeshRenderer::Load(const nlohmann::json& objectJson) {
     id = objectJson["id"];
     cur_id = objectJson["cur_id"];
-    cur_mat = objectJson["cur_mat"];*
+    cur_mat = objectJson["cur_mat"];
     if (prev_mat != cur_mat) {
         meshRenderer->SetMaterial((EMaterialType)cur_mat);
         std::cout << cur_mat << std::endl;
@@ -739,5 +739,13 @@ void ATR_BloomProcessNode::UI_Implement()
 {
     ATR_PostProcessNode::UI_Implement();
     ImGui::DragFloat("threshold", &dynamic_cast<BloomProcess*>(postprocess)->threshold, 0.05f);
-    ImGui::DragFloat("exposure", &dynamic_cast<BloomProcess*>(postprocess)->exposure, 0.05f);
+    ImGui::DragFloat(("exposure##" + std::to_string(id)).c_str(), &dynamic_cast<BloomProcess*>(postprocess)->exposure, 0.05f);
+}
+
+ATR_HDRProcessNode::ATR_HDRProcessNode(PostProcess* _hdrprocess) : ATR_PostProcessNode(_hdrprocess) {}
+ATR_HDRProcessNode::~ATR_HDRProcessNode() {}
+void ATR_HDRProcessNode::UI_Implement()
+{
+    ATR_PostProcessNode::UI_Implement();
+    ImGui::DragFloat(("exposure##" + std::to_string(id)).c_str(), &dynamic_cast<HDRProcess*>(postprocess)->exposure1, 0.05f);
 }

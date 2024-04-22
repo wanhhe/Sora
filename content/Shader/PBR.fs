@@ -263,7 +263,8 @@ float LinearizeDepth(float depth)
 
 vec3 GetPBRLightingResult(PBRLightingInfo PBR, float NdotL, float shadow)
 {
-    return  (1 - shadow) * (PBR.Lo + PBR.ambient) / (PBR.Lo + PBR.ambient + vec3(1.0)) + PBR.ambient * shadow;
+    // return  (1 - shadow) * (PBR.Lo + PBR.ambient) / (PBR.Lo + PBR.ambient + vec3(1.0)) + PBR.ambient * shadow;
+    return  (1 - shadow) * (PBR.Lo + PBR.ambient) + PBR.ambient * shadow;
 }
 
 float ShadowCalculation(vec4 fragPosLightSpace, vec3 normal, vec3 lightDir)
