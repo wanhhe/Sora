@@ -54,6 +54,7 @@ public:
     // ATR_Light* light;
     ATR_LightRenderer* atr_lightRenderer;
     SceneLight(std::string _name, bool _is_editor);
+    void OnModelRemoved();
     virtual void RenderAttribute();
     void Save(nlohmann::json& objectJson) override;
     void Load(const nlohmann::json& objectJson) override;

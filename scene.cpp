@@ -146,12 +146,18 @@ void Scene::LoadScene(const std::string _path) {
     file >> sceneJson;
     file.close();
 
+
     // 清除当前场景对象列表
-    for (int i = 0; i < scene_object_list.size(); i++) {
+    int list_size = scene_object_list.size();
+    int flag = 0;
+    for (int i = 0; i < list_size; i++) {
         if (i != 1 && i != 0) {
-            RemoveSceneObjectAtIndex(i);
+            RemoveSceneObjectAtIndex(i-flag);
+            flag++;
         }
     }
+
+    std::cout << scene_object_list.size() << std::endl;
 
     // 重建模型
     for (auto& objectJson : sceneJson["models"])
