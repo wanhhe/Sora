@@ -1,7 +1,7 @@
 #version 330 core
 layout (location = 0) out vec4 FragColor;
 
-#define POINT_LIGHTS 50
+#define POINT_LIGHTS 40
 #define SPOT_LIGHTS 10
 
 in VS_OUT{
@@ -164,7 +164,7 @@ vec3 CalculateSpotLighting(vec3 n, vec3 v, float r, vec3 F0, float m, vec3 albed
         float distance = length(spotLights[i].position - fs_in.FragPos);
         float attenuation = 1.0 / (spotLights[i].constant + spotLights[i].linear * distance + 
                 spotLights[i].quadratic * (distance * distance));
-        vec3 radiance = spotLights[i].color * attenuation;
+        vec3 radiance = spotLights[i].color * attenuation * intensity;
 
         float NdotH = dot(n, h);
         float NdotL = dot(n, l);
@@ -187,7 +187,7 @@ vec3 CalculateSpotLighting(vec3 n, vec3 v, float r, vec3 F0, float m, vec3 albed
         vec3 Ks = F;
         vec3 Kd = saturate(1 - Ks) * (1 - m);
 
-        Lo += (Kd * albedo / PI + specular) * intensity * NdotL;
+        Lo += (Kd * albedo / PI + specular) * radiance * NdotL;
     }
     return Lo;
 }

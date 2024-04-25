@@ -461,6 +461,7 @@ void ATR_MeshRenderer::Save(nlohmann::json& objectJson) {
     objectJson["cur_id"] = cur_id;
     objectJson["prev_mat"] = prev_mat;
     objectJson["cur_mat"] = cur_mat;
+    objectJson["cast_shadow"] = meshRenderer->cast_shadow;
 
     nlohmann::json atr_material_json;
     atr_material->Save(atr_material_json);
@@ -471,6 +472,7 @@ void ATR_MeshRenderer::Load(const nlohmann::json& objectJson) {
     id = objectJson["id"];
     cur_id = objectJson["cur_id"];
     cur_mat = objectJson["cur_mat"];
+    meshRenderer->cast_shadow = objectJson["cast_shadow"];
     if (prev_mat != cur_mat) {
         meshRenderer->SetMaterial((EMaterialType)cur_mat);
         std::cout << cur_mat << std::endl;

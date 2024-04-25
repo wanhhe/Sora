@@ -166,8 +166,8 @@ public:
     void UI_Implement() override;
     ~ATR_Light() override = default;
     virtual float GetConstant() { return 1; };
-    virtual float GetLinear() { return 0.09; };
-    virtual float GetQuadratic() { return 0.032; };
+    virtual float GetLinear() { return 0.7; };
+    virtual float GetQuadratic() { return 1.8; };
     virtual float GetCutOff() { return glm::cos(glm::radians(12.5f)); }
     virtual float GetOuterCutOff() { return glm::cos(glm::radians(20.5f)); }
     virtual void Save(nlohmann::json& objectJson);
@@ -208,8 +208,8 @@ public:
     void Load(const nlohmann::json& objectJson) override;
 
     float constant = 1.0f;
-    float linear = 0.09f;
-    float quadratic = 0.032f;
+    float linear = 0.7f;
+    float quadratic = 1.8f;
 };
 
 class ATR_SpotLight: public ATR_Light {
@@ -233,8 +233,8 @@ public:
     float outerCutOff = glm::cos(glm::radians(20.5f));
 
     float constant = 1.0f;
-    float linear = 0.09f;
-    float quadratic = 0.032f;
+    float linear = 0.7f;
+    float quadratic = 1.8f;
 };
 
 class ATR_LightRenderer : public Attribute {

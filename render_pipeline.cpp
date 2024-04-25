@@ -493,7 +493,7 @@ void RenderPipeline::ProcessColorPass()
                     shader->setFloat(uniformName + ".constant", light->atr_lightRenderer->GetConstant());
                     shader->setFloat(uniformName + ".linear", light->atr_lightRenderer->GetLinear());
                     shader->setFloat(uniformName + ".quadratic", light->atr_lightRenderer->GetQuadratic());
-                    shader->setVec3(uniformName + ".color", light->GetLightColor() * 20.0f);
+                    shader->setVec3(uniformName + ".color", light->GetLightColor() * 100.0f);
 
                     point_light_id++;
                 }
@@ -504,7 +504,7 @@ void RenderPipeline::ProcessColorPass()
                     shader->setFloat(uniformName + ".constant", light->atr_lightRenderer->GetConstant());
                     shader->setFloat(uniformName + ".linear", light->atr_lightRenderer->GetLinear());
                     shader->setFloat(uniformName + ".quadratic", light->atr_lightRenderer->GetQuadratic());
-                    shader->setVec3(uniformName + ".color", light->GetLightColor() * 255.0f);
+                    shader->setVec3(uniformName + ".color", light->GetLightColor() * 100.0f);
                     shader->setFloat(uniformName + ".cutOff", light->atr_lightRenderer->GetCutOff());
                     shader->setFloat(uniformName + ".outerCutOff", light->atr_lightRenderer->GetOuterCutOff());
 
