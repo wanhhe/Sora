@@ -178,7 +178,6 @@ void PBRMaterial::Save(nlohmann::json& objectJson) {
     Material::Save(objectJson);
     objectJson["name"] = name;
     objectJson["albedo_map"] = albedo_map->name;
-    std::cout << albedo_map->name << std::endl;
     objectJson["normal_map"] = normal_map->name;
     objectJson["ao_map"] = ao_map->name;
     objectJson["roughness_map"] = roughness_map->name;
@@ -193,7 +192,6 @@ void PBRMaterial::Save(nlohmann::json& objectJson) {
 
 void PBRMaterial::Load(const nlohmann::json& objectJson) {
     Material::Load(objectJson);
-    std::cout << Texture2D::LoadedTextures[objectJson["albedo_map"]]->name << std::endl;
     SetTexture(&albedo_map, Texture2D::LoadedTextures[objectJson["albedo_map"]]);
     SetTexture(&normal_map, Texture2D::LoadedTextures[objectJson["normal_map"]]);
     SetTexture(&ao_map, Texture2D::LoadedTextures[objectJson["ao_map"]]);

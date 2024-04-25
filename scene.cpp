@@ -156,8 +156,7 @@ void Scene::LoadScene(const std::string _path) {
             flag++;
         }
     }
-
-    std::cout << scene_object_list.size() << std::endl;
+    render_pipeline.lights.clear();
 
     // 重建模型
     for (auto& objectJson : sceneJson["models"])

@@ -488,6 +488,7 @@ void RenderPipeline::ProcessColorPass()
             {
                 SceneLight* light = lights[i];
                 if (light->atr_lightRenderer->GetType() == 1) {
+                    
                     std::string uniformName = "pointLights[" + std::to_string(point_light_id) + "]";
                     shader->setVec3(uniformName + ".position", light->atr_transform->transform->Position());
                     shader->setFloat(uniformName + ".constant", light->atr_lightRenderer->GetConstant());

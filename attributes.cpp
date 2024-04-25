@@ -475,7 +475,6 @@ void ATR_MeshRenderer::Load(const nlohmann::json& objectJson) {
     meshRenderer->cast_shadow = objectJson["cast_shadow"];
     if (prev_mat != cur_mat) {
         meshRenderer->SetMaterial((EMaterialType)cur_mat);
-        std::cout << cur_mat << std::endl;
         delete atr_material;
         atr_material = new ATR_Material(meshRenderer->material);
     }
