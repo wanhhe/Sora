@@ -1,4 +1,5 @@
 #include "pose.h"
+#include <iostream>
 
 Pose::Pose() {}
 
@@ -42,6 +43,12 @@ void Pose::SetLocalTransform(unsigned int index, const Transform& transform) {
 
 Transform Pose::GetGlobalTransform(unsigned int index) {
 	Transform result = mJoints[index];
+
+	//glm::mat4 mInvBindPose;
+	//mInvBindPose = result.GetTransformMatrix();
+	//std::cout << "ee" << std::endl;
+	//std::cout << mInvBindPose[0][0] << " " << mInvBindPose[0][1] << " " << mInvBindPose[0][2] << " " << mInvBindPose[0][3] << std::endl;
+
 	// 遍历到根节点为止
 	for (int parent = mParents[index]; parent >= 0; parent = mParents[parent]) {
 		result = Transform::combine(mJoints[parent], result);
@@ -79,6 +86,10 @@ void Pose::GetMatrixPalette(std::vector<glm::mat4>& out) {
 			global = out[parent] * global; // 由于是从小到大的，out[parent]已经是被处理过的了
 		}
 		out[i] = global;
+
+		//std::cout << "i" << std::endl;
+		//glm::mat4 mInvBindPose;
+		//std::cout << global[0][0] << " " << global[0][1] << " " << global[0][2] << " " << global[0][3] << std::endl;
 	}
 
 	for (; i < size; ++i) {

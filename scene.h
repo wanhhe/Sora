@@ -22,7 +22,7 @@ public:
     void RegisterOtherLight(SceneLight* light);
     void InstanceFromModel(Model *model, std::string name);
     void RemoveSceneObjectAtIndex(int index);
-    void RenderScene();
+    void RenderScene(float deltaTime);
 
     void SaveScene(const std::string _path);
     void LoadScene(const std::string _path);

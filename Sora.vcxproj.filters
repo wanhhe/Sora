@@ -31,6 +31,12 @@
     <Filter Include="源文件\Animation">
       <UniqueIdentifier>{a8ec886a-12cf-4bbe-bc29-0c8976548ddd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="头文件\GLTF">
+      <UniqueIdentifier>{38d5dc28-ea41-4a1d-bce4-5820035322ca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\GLTF">
+      <UniqueIdentifier>{934789b2-35b9-468a-8d6d-a0157e5b8796}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="attributes.h">
@@ -171,6 +177,12 @@
     <ClInclude Include="transform.h">
       <Filter>头文件\Math</Filter>
     </ClInclude>
+    <ClInclude Include="cgltf.h">
+      <Filter>头文件\GLTF</Filter>
+    </ClInclude>
+    <ClInclude Include="GLTFLoader.h">
+      <Filter>头文件\GLTF</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="attributes.cpp">
@@ -274,6 +286,15 @@
     </ClCompile>
     <ClCompile Include="rearrange_bones.cpp">
       <Filter>源文件\Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="cgltf.c">
+      <Filter>源文件\GLTF</Filter>
+    </ClCompile>
+    <ClCompile Include="GLTFLoader.cpp">
+      <Filter>源文件\GLTF</Filter>
+    </ClCompile>
+    <ClCompile Include="mat4.cpp">
+      <Filter>源文件\Math</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

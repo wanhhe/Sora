@@ -153,6 +153,7 @@
   <ItemGroup>
     <ClInclude Include="attributes.h" />
     <ClInclude Include="camera.h" />
+    <ClInclude Include="cgltf.h" />
     <ClInclude Include="clip.h" />
     <ClInclude Include="editor_content.h" />
     <ClInclude Include="editor_resource.h" />
@@ -160,6 +161,7 @@
     <ClInclude Include="file_system.h" />
     <ClInclude Include="frame.h" />
     <ClInclude Include="gizmos.h" />
+    <ClInclude Include="GLTFLoader.h" />
     <ClInclude Include="imconfig.h" />
     <ClInclude Include="imgui.h" />
     <ClInclude Include="imgui_impl_glfw.h" />
@@ -200,11 +202,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="attributes.cpp" />
+    <ClCompile Include="cgltf.c" />
     <ClCompile Include="clip.cpp" />
     <ClCompile Include="editor_content.cpp" />
     <ClCompile Include="editor_settings.cpp" />
     <ClCompile Include="file_system.cpp" />
     <ClCompile Include="glad.c" />
+    <ClCompile Include="GLTFLoader.cpp" />
     <ClCompile Include="imgui.cpp" />
     <ClCompile Include="imgui_demo.cpp" />
     <ClCompile Include="imgui_draw.cpp" />
@@ -214,6 +218,7 @@
     <ClCompile Include="imgui_widgets.cpp" />
     <ClCompile Include="input_management.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="mat4.cpp" />
     <ClCompile Include="material.cpp" />
     <ClCompile Include="model.cpp" />
     <ClCompile Include="pose.cpp" />

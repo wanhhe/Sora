@@ -16,6 +16,8 @@ in VS_OUT{
     vec3 N;
     vec4 FragPosLightSpace;
     mat4 ViewMat;
+    // ivec4 joint;
+    // vec4 weight;
 } fs_in;
 
 struct Texture2D

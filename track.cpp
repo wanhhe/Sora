@@ -19,9 +19,9 @@ namespace TrackHelpers {
 	}
 
 	inline glm::quat Interpolate(const glm::quat& a, const glm::quat& b, float t) {
-		glm::quat result = mix(a, b, t);
-		if (dot(a, b) < 0) {
-			result = mix(a, -b, t);
+		glm::quat result = glm::mix(a, b, t);
+		if (glm::dot(a, b) < 0) {
+			result = glm::mix(a, -b, t);
 		}
 		return glm::normalize(result); // nlerp
 	}
@@ -35,13 +35,13 @@ namespace TrackHelpers {
 	}
 
 	inline glm::quat AdjustHermiteResult(glm::quat q) {
-		return normalize(q);
+		return glm::normalize(q);
 	}
 
 	inline void Neighborhood(const float& a, float& b) {}
 	inline void Neighborhood(const glm::vec3& a, glm::vec3& b) {}
 	inline void Neighborhood(const glm::quat& a, glm::quat& b) {
-		if (dot(a, b) < 0) {
+		if (glm::dot(a, b) < 0) {
 			b = -b;
 		}
 	}
@@ -186,8 +186,8 @@ glm::vec3 Track<glm::vec3, 3>::Cast(float* value) {
 
 template<>
 glm::quat Track<glm::quat, 4>::Cast(float* value) {
-	glm::quat q = glm::quat(value[0], value[1], value[2], value[3]);
-	return normalize(q);
+	glm::quat q = glm::quat(value[3], value[0], value[1], value[2]);
+	return glm::normalize(q);
 }
 
 template<typename T, int N>

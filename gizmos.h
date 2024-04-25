@@ -179,3 +179,76 @@ public:
         glDisable(GL_BLEND);
     }
 };
+
+class GSkeleton {
+public:
+    GSkeleton(Pose pose)
+    {
+        Init(pose);
+    }
+
+    ~GSkeleton()
+    {
+        glDeleteVertexArrays(1, &skeletonVAO);
+        glDeleteBuffers(1, &skeletonVBO);
+    }
+
+    void Draw()
+    {
+        // 绑定VAO并绘制
+        glBindVertexArray(skeletonVAO);
+        glDrawArrays(GL_LINES, 0, vertices.size()); // 使用GL_LINES来绘制线条
+        glBindVertexArray(0);
+
+    }
+
+private:
+    unsigned int skeletonVAO, skeletonVBO;
+    std::vector<glm::vec3> vertices; // 用于存储骨骼顶点的动态数组
+
+    void Init(Pose& pose)
+    {
+        // 根据骨骼的姿态生成顶点数据
+        vertices.clear();
+
+        unsigned int numJoints = pose.Size();
+        unsigned int requireVerts = 0;
+        for (unsigned int i = 0; i < numJoints; i++) {
+            if (pose.GetParent(i) < 0) { // 如果没有父节点了
+                continue;
+            }
+
+            requireVerts += 2; // 若不是父节点，则需该结点和其父节点一起绘制一段骨骼
+        }
+
+        vertices.resize(requireVerts);
+        for (unsigned int i = 0; i < numJoints; i++) {
+            int parent = pose.GetParent(i);
+            if (parent < 0) { // 如果没有父节点了
+                continue;
+            }
+
+            vertices.push_back(pose.GetGlobalTransform(i).Position());
+            vertices.push_back(pose.GetGlobalTransform(parent).Position());
+        }
+
+        //for (int i = 0; i < vertices.size(); i++) {
+        //    std::cout << 500 * vertices[i].x << " " << 500 * vertices[i].y << " " << 500 * vertices[i].z << std::endl;
+        //}
+
+        // 创建顶点数组和缓冲
+        glGenVertexArrays(1, &skeletonVAO);
+        glGenBuffers(1, &skeletonVBO);
+        glBindVertexArray(skeletonVAO);
+        glBindBuffer(GL_ARRAY_BUFFER, skeletonVBO);
+        glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3), vertices.data(), GL_STATIC_DRAW);
+
+        // 启用顶点属性并配置它们
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+
+        glBindVertexArray(0);
+    }
+
+
+};

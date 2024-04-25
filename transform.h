@@ -4,6 +4,9 @@
 #include <glm/gtx/quaternion.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/matrix_decompose.hpp>
+#include <iostream>
+#include "mat4.h"
+#include "quat.h"
 
 #define EPSILON 0.000001f
 
@@ -117,11 +120,23 @@ public:
 
     glm::mat4 GetTransformMatrix()
     {
-        glm::mat4 mat = glm::mat4(1.0f);
-        glm::mat4 s = glm::scale(mat, scale);
-        glm::mat4 r = glm::mat4_cast(rotation);
-        glm::mat4 t = glm::translate(mat, position);
-        return t * r * s;
+        quat quat_trans(rotation.x, rotation.y, rotation.z, rotation.w);
+        vec3 x = quat_trans * vec3(1, 0, 0);
+        vec3 y = quat_trans * vec3(0, 1, 0);
+        vec3 z = quat_trans * vec3(0, 0, 1);
+
+        // Next, scale the basis vectors
+        x = x * scale.x;
+        y = y * scale.y;
+        z = z * scale.z;
+
+        // Create matrix
+        return glm::mat4(
+            x.x, x.y, x.z, 0, // X basis (& Scale)
+            y.x, y.y, y.z, 0, // Y basis (& scale)
+            z.x, z.y, z.z, 0, // Z basis (& scale)
+            position.x, position.y, position.z, 1  // Position
+        );
     }
 
     static Transform mat4ToTransform(const glm::mat4& m)
@@ -146,23 +161,56 @@ public:
 
         Transform out;
         out.position = glm::vec3(m[3]); //  矩阵的最后一列是偏移量
-        out.rotation = glm::quat_cast(m);
+        // out.rotation = glm::quat_cast(m);
 
-        glm::mat4 rotScaleMat = glm::mat4(
-            m[0][0], m[0][1], m[0][2], 0,
-            m[1][0], m[1][1], m[1][2], 0,
-            m[2][0], m[2][1], m[2][2], 0,
-            m[3][0], m[3][1], m[3][2], 0
+        mat4 trans(
+            m[0][0], m[0][1], m[0][2], m[0][3],
+            m[1][0], m[1][1], m[1][2], m[1][3],
+            m[2][0], m[2][1], m[2][2], m[2][3],
+            m[3][0], m[3][1], m[3][2], m[3][3]
+            );
+        
+        quat quat_trans = mat4ToQuat(trans);
+        out.rotation = glm::quat(quat_trans.w, quat_trans.x, quat_trans.y, quat_trans.z);
+
+        mat4 rotScaleMat(
+            trans.v[0], trans.v[1], trans.v[2], 0,
+            trans.v[4], trans.v[5], trans.v[6], 0,
+            trans.v[8], trans.v[9], trans.v[10], 0,
+            0, 0, 0, 1
         );
-        // 消去旋转
-        glm::mat4 invRotMat = glm::mat4_cast(glm::inverse(out.rotation));
-        glm::mat4 scaleSkewMat = rotScaleMat * invRotMat;
-        // 对角线是缩放信息
+        mat4 invRotMat = quatToMat4(::inverse(quat_trans));
+        mat4 scaleSkewMat = rotScaleMat * invRotMat;
+
         out.scale = glm::vec3(
-            scaleSkewMat[0][0],
-            scaleSkewMat[1][1],
-            scaleSkewMat[2][3]
+            scaleSkewMat.v[0],
+            scaleSkewMat.v[5],
+            scaleSkewMat.v[10]
         );
+
+        //glm::mat4 rotScaleMat = glm::mat4(
+        //    m[0][0], m[0][1], m[0][2], 0,
+        //    m[1][0], m[1][1], m[1][2], 0,
+        //    m[2][0], m[2][1], m[2][2], 0,
+        //    0,0,0,1
+        //);
+        //// 消去旋转
+        //glm::mat4 invRotMat = glm::mat4_cast(glm::inverse(out.rotation));
+        //glm::mat4 scaleSkewMat = rotScaleMat * invRotMat;
+        // 对角线是缩放信息
+        //out.scale = glm::vec3(
+        //    scaleSkewMat[0][0],
+        //    scaleSkewMat[1][1],
+        //    scaleSkewMat[2][2]
+        //);
+        //glm::vec3 skew;
+        //glm::vec4 perspective;
+        //glm::decompose(m, out.scale, out.rotation, out.position, skew, perspective);
+        
+        // out.rotation = glm::conjugate(out.rotation);
+        //std::cout << "ii" << std::endl;
+        // std::cout << out.position.x << " " << out.position.y << " " << out.position.z << std::endl;
+        // std::cout << m[0][0] << " " << m[0][1] << " " << m[0][2] << " " << m[0][3] << std::endl;
         return out;
     }
 
@@ -205,13 +253,28 @@ public:
 
 
         Transform out;
-
+        
         out.scale = a.scale * b.scale;
-        out.rotation = b.rotation * a.rotation;
+        
+        //out.rotation = glm::quat(
+        //    -a.rotation.x * b.rotation.x - a.rotation.y * b.rotation.y - a.rotation.z * b.rotation.z + a.rotation.w * b.rotation.w,
+        //    a.rotation.x * b.rotation.w + a.rotation.y * b.rotation.z - a.rotation.z * b.rotation.y + a.rotation.w * b.rotation.x,
+        //    -a.rotation.x * b.rotation.z + a.rotation.y * b.rotation.w + a.rotation.z * b.rotation.x + a.rotation.w * b.rotation.y,
+        //    a.rotation.x * b.rotation.y - a.rotation.y * b.rotation.x + a.rotation.z * b.rotation.w + a.rotation.w * b.rotation.z
+        //);
+        // out.rotation = b.rotation * a.rotation;
+        
+        quat quat_trans_a(a.rotation.x, a.rotation.y, a.rotation.z, a.rotation.w);
+        quat quat_trans_b(b.rotation.x, b.rotation.y, b.rotation.z, b.rotation.w);
+        quat quat_trans_res = quat_trans_b * quat_trans_a;
+        // out.rotation = a.rotation * b.rotation;
+        out.rotation = glm::quat(quat_trans_res.w, quat_trans_res.x, quat_trans_res.y, quat_trans_res.z);
+        // std::cout << out.rotation.x << " " << out.rotation.y << " " << out.rotation.z << " " << out.rotation.w << std::endl;
 
         out.position = a.rotation * (a.scale * b.position);
+        
         out.position = a.position + out.position;
-
+        // std::cout << out.position.x << " " << out.position.y << " " << out.position.z << std::endl;
         return out;
     }
 
@@ -238,6 +301,9 @@ public:
     //    return inv;
 
         Transform inv;
+        //quat quat_trans(t.rotation.x, t.rotation.y, t.rotation.z, t.rotation.w);
+        //quat_trans = ::inverse(quat_trans);
+        //inv.rotation = glm::quat(quat_trans.w, quat_trans.x, quat_trans.y, quat_trans.z);
         inv.rotation = glm::inverse(t.rotation);
         inv.scale.x = fabs(t.scale.x) < EPSILON ? 0.0f : 1.0f / t.scale.x;
         inv.scale.y = fabs(t.scale.y) < EPSILON ? 0.0f : 1.0f / t.scale.y;
@@ -253,7 +319,7 @@ public:
     static Transform mix(const Transform& a, const Transform& b, float t) {
         // 四元数的插值要解决neibourhood问题
         glm::quat bRot = b.rotation;
-        if (dot(a.rotation, bRot) < 0.0f) {
+        if (glm::dot(a.rotation, bRot) < 0.0f) {
             bRot = -bRot;
         }
 

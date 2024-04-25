@@ -153,6 +153,7 @@ void RenderPipeline::ProcessShadowPass()
                 sm->meshRenderers[i]->PureDraw();
             }
         }
+        int j = 1;
     }
     // glDisable(GL_CULL_FACE);
     // glCullFace(GL_BACK);
@@ -173,7 +174,6 @@ void RenderPipeline::ProcessZPrePass()
     Camera* camera = window->render_camera;
     glm::mat4 projection = glm::perspective(glm::radians(camera->Zoom), (float)window->Width() / (float)window->Height(), 0.1f, 100.0f);
     glm::mat4 view = camera->GetViewMatrix();
-
     for (std::map<unsigned int, SceneModel *>::iterator it = ModelQueueForRender.begin(); it != ModelQueueForRender.end(); it++)
     {
         SceneModel *sm = it->second;
@@ -373,6 +373,24 @@ void RenderPipeline::ProcessSpecularIBLPass() {
     FrameBufferTexture::ClearBufferBinding();
 }
 
+void RenderPipeline::Update(float deltaTime) {
+    for (std::map<unsigned int, SceneModel*>::iterator it = ModelQueueForRender.begin(); it != ModelQueueForRender.end(); it++)
+    {
+        SceneModel* sm = it->second;
+        if (sm->model->instance.load) {
+            sm->model->instance.mPlayback = sm->model->mClips[sm->model->instance.mClip].Sample(sm->model->instance.mAnimatedPose, sm->model->instance.mPlayback + deltaTime);
+            sm->model->instance.mAnimatedPose.GetMatrixPalette(sm->model->instance.mPosePalette);
+
+            unsigned int size = (unsigned int)sm->model->instance.mPosePalette.size();;
+            // 获得动画变换矩阵
+            for (unsigned int i = 0; i < size; i++) {
+                sm->model->instance.mPosePalette[i] = sm->model->instance.mPosePalette[i] * sm->model->mSkeleton.GetInvBindPose()[i];
+            }
+        }
+
+    }
+}
+
 /*********************
 * Color Pass
 **********************/
@@ -429,6 +447,16 @@ void RenderPipeline::ProcessColorPass()
                 shader = mat->shader;
             }
             shader->use();
+            shader->setBool("isSkin", false);
+            if (sm->model->instance.load) {
+                shader->setMat4("animated", sm->model->instance.mPosePalette);
+                shader->setBool("isSkin", true);
+                //for (int i = 0; i < sm->model->instance.mPosePalette.size(); i++) {
+                //    shader->setMat4("animated[" + std::to_string(i) + "]", sm->model->instance.mPosePalette[i]);
+                //}
+            }
+            
+            //std::cout << sm->model->instance.mPosePalette.size() << std::endl;
             // Render the loaded model
             Transform *transform = sm->atr_transform->transform;
             glm::mat4 m = glm::mat4(1.0f);
@@ -465,7 +493,7 @@ void RenderPipeline::ProcessColorPass()
                     shader->setFloat(uniformName + ".constant", light->atr_lightRenderer->GetConstant());
                     shader->setFloat(uniformName + ".linear", light->atr_lightRenderer->GetLinear());
                     shader->setFloat(uniformName + ".quadratic", light->atr_lightRenderer->GetQuadratic());
-                    shader->setVec3(uniformName + ".color", light->GetLightColor() * 255.0f);
+                    shader->setVec3(uniformName + ".color", light->GetLightColor() * 20.0f);
 
                     point_light_id++;
                 }
@@ -493,7 +521,7 @@ void RenderPipeline::ProcessColorPass()
                 glm::vec3 front = global_light->atr_transform->transform->GetFront();
                 shader->setVec3("lightDir", front);
                 glm::vec3 lightColor = global_light->GetLightColor();
-                shader->setVec3("lightColor", lightColor * 5.f);
+                shader->setVec3("lightColor", lightColor * 2.f);
             }
             else
             {
@@ -506,10 +534,11 @@ void RenderPipeline::ProcessColorPass()
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
+
 /*********************
 * Render Gizmos
 **********************/
-void RenderPipeline::RenderGizmos()
+void RenderPipeline::RenderGizmos(float deltaTime)
 {
     glDisable(GL_DEPTH_TEST);
     Camera* camera = window->render_camera;
@@ -540,6 +569,17 @@ void RenderPipeline::RenderGizmos()
             up.color = glm::vec3(0,1,0);
             up.DrawInGlobal();
         }
+    }
+
+    Shader::LoadedShaders["color.fs"]->setVec3("color", { 1,1,1 });
+    for (std::map<unsigned int, SceneModel*>::iterator it = ModelQueueForRender.begin(); it != ModelQueueForRender.end(); it++)
+    {
+        SceneModel* sm = it->second;
+
+        // 使用着色器
+        Shader::LoadedShaders["color.fs"]->setMat4("model", sm->atr_transform->transform->GetTransformMatrix());
+        GSkeleton skeleton(sm->model->instance.mAnimatedPose);
+        skeleton.Draw();
     }
 
     // Draw light debug cube
@@ -593,8 +633,9 @@ void RenderPipeline::RenderGizmos()
 * we need to sort models by distance to camera. 
 * All models is rendered without alpha clip or alpha blend now.
 *****************************************************************/
-void RenderPipeline::Render()
+void RenderPipeline::Render(float deltaTime)
 {
+    Update(deltaTime);
 
     // Draw shadow Pass
     ProcessShadowPass();
@@ -616,6 +657,8 @@ void RenderPipeline::Render()
             EditorSettings::NeedUpdateSkybox = false;
         }
     }
+
+
 
     // Pre Render Setting
     if (EditorSettings::UsePostProcess && !EditorSettings::UsePolygonMode && postprocess_manager != nullptr)
@@ -639,7 +682,7 @@ void RenderPipeline::Render()
     // Draw Gizmos
     if (EditorSettings::DrawGizmos)
     {
-        RenderGizmos();
+        RenderGizmos(deltaTime);
     }
 
     if (EditorSettings::UseSkybox && EditorSettings::SkyboxTexture != nullptr) {

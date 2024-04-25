@@ -4,6 +4,7 @@
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 #include "editor_settings.h"
 #include "texture.h"
@@ -14,8 +15,6 @@
 #include <vector>
 #include <iostream>
 using namespace std;
-
-#define MAX_BONE_INFLUENCE 4
 
 struct Vertex
 {
@@ -29,10 +28,10 @@ struct Vertex
     glm::vec3 Tangent;
     // bitangent
     glm::vec3 Bitangent;
-    // bone indexes which will influence this vertex
-    int m_BoneIDs[MAX_BONE_INFLUENCE];
-    // weights from each bone
-    float m_Weights[MAX_BONE_INFLUENCE];
+
+    glm::vec4 Weights;
+
+    glm::ivec4 Influences;
 };
 
 class Mesh
@@ -55,6 +54,10 @@ public:
         setupMesh();
     }
 
+    Mesh() {
+        vertices.clear();
+    }
+
     // Render the mesh
     void Draw(Material *material)
     {
@@ -65,6 +68,10 @@ public:
         glBindVertexArray(VAO);
         glDrawElements(GL_TRIANGLES, static_cast<unsigned int>(indices.size()), GL_UNSIGNED_INT, 0);
         glBindVertexArray(0);
+
+        //for (int i = 0; i < vertices.size(); i++) {
+        //    std::cout << vertices[i].Influences.x << " " << vertices[i].Influences.y << vertices[i].Influences.z << std::endl;
+        //}
 
         // Always good practice to set everything back to defaults once configured.
         glActiveTexture(GL_TEXTURE0);
@@ -80,6 +87,28 @@ public:
 
         // Always good practice to set everything back to defaults once configured.
         glActiveTexture(GL_TEXTURE0);
+    }
+
+    vector<Vertex>& GetVertices() { return vertices; }
+    vector<Vertex> GetVert() { return vertices; }
+
+    void SetSkin(vector<Vertex> _vertices) {
+        for (unsigned int i = 0; i < vertices.size(); i++) {
+            vertices[i].Weights = _vertices[i].Weights;
+            vertices[i].Influences = _vertices[i].Influences;
+        }
+    }
+
+    void AgainSetUp() {
+        //glBindVertexArray(VAO);
+        //// Load data into vertex buffers
+        glBindBuffer(GL_ARRAY_BUFFER, VBO);
+        //for (unsigned int i = 0; i < vertices.size(); i++) {
+        //    glBufferSubData(GL_ARRAY_BUFFER, offsetof(Vertex, Weights) + i * sizeof(Vertex), sizeof(glm::vec4), glm::value_ptr(vertices[i].Weights));
+        //    glBufferSubData(GL_ARRAY_BUFFER, offsetof(Vertex, Influences) + i * sizeof(Vertex), sizeof(glm::ivec4), glm::value_ptr(vertices[i].Influences));
+        //}
+        glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), &vertices[0], GL_STATIC_DRAW);
+        //glBindVertexArray(0);
     }
 
 private:
@@ -121,13 +150,13 @@ private:
         // vertex bitangent
         glEnableVertexAttribArray(4);
         glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, Bitangent));
-        // ids
-        glEnableVertexAttribArray(5);
-        glVertexAttribIPointer(5, 4, GL_INT, sizeof(Vertex), (void *)offsetof(Vertex, m_BoneIDs));
-
         // weights
+        glEnableVertexAttribArray(5);
+        glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Weights));
+        // ids
         glEnableVertexAttribArray(6);
-        glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, m_Weights));
+        glVertexAttribIPointer(6, 4, GL_UNSIGNED_INT, sizeof(Vertex), (void *)offsetof(Vertex, Influences));
+
         glBindVertexArray(0);
     }
 };
@@ -137,7 +166,7 @@ class MeshRenderer
 public:
     Material* material;
     Mesh* mesh;
-    bool        cast_shadow = true;
+    bool cast_shadow = true;
 
 public:
     MeshRenderer(Material* _material, Mesh* _mesh) : material(_material), mesh(_mesh) {}

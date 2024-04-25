@@ -162,7 +162,7 @@ int main()
         // Render
         // ------
         scene->render_pipeline.clear_color = main_window.clear_color;
-        scene->RenderScene();
+        scene->RenderScene(deltaTime);
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // --------------------------------- ----------------------------------------------

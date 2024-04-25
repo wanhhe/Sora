@@ -84,16 +84,16 @@ void RearrangeFastClip(FastClip& fastClip, BoneMap& boneMap) {
 	}
 }
 
-void RearrangeMesh(Mesh& mesh, BoneMap& boneMap) {
-	//std::vector<ivec4>& influences = mesh.GetInfluences();
-	//unsigned int size = influences.size();
-	//for (unsigned int i = 0; i < size; i++) {
-	//	// 修改对该mesh产生影响的骨骼的位置(索引)
-	//	influences[i].x = boneMap[influences[i].x];
-	//	influences[i].y = boneMap[influences[i].y];
-	//	influences[i].z = boneMap[influences[i].z];
-	//	influences[i].w = boneMap[influences[i].w];
-	//}
+void RearrangeMesh(Mesh* mesh, BoneMap& boneMap) {
+	std::vector<Vertex>& vertices = mesh->GetVertices();
+	unsigned int size = vertices.size();
+	for (unsigned int i = 0; i < size; i++) {
+		// 修改对该mesh产生影响的骨骼的位置(索引)
+		vertices[i].Influences.x = boneMap[vertices[i].Influences.x];
+		vertices[i].Influences.y = boneMap[vertices[i].Influences.y];
+		vertices[i].Influences.z = boneMap[vertices[i].Influences.z];
+		vertices[i].Influences.w = boneMap[vertices[i].Influences.w];
+	}
 
 	//mesh.UpdateOpenGLBuffers();
 }

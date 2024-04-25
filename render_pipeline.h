@@ -25,7 +25,7 @@ public:
     void RemoveFromRenderQueue(SceneModel *model);
     void RemoveFromRenderQueue(unsigned int id);
     SceneModel* GetRenderModel(unsigned int id);
-    void Render();
+    void Render(float deltaTime);
     void OnWindowSizeChanged(int width, int height) override;
 
     struct ShadowMapSetting
@@ -87,7 +87,7 @@ private:
     void ProcessNormalPass();
     void ProcessColorPass();
     void ProcessSpecularIBLPass();
-    void RenderGizmos();
+    void RenderGizmos(float deltaTime);
     void RenderSkybox();
     void RenderCube();
     void RenderIrradianceMap();
@@ -95,6 +95,7 @@ private:
     void RenderQuad();
     int GetPointLightNum();
     int GetSpotLightNum();
+    void Update(float deltaTime);
 
     unsigned int cubeVAO = 0;
     unsigned int cubeVBO = 0;

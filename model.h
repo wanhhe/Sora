@@ -6,11 +6,13 @@
 #include <assimp/postprocess.h>
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
+#include "cgltf.h"
 
 #include "mesh.h"
 #include "shader.h"
 #include "skeleton.h"
 #include "clip.h"
+#include "GLTFLoader.h"
 
 #include <string>
 #include <fstream>
@@ -26,12 +28,11 @@ class SceneModel;
 
 struct AnimationInstance {
     Pose mAnimatedPose;
-    std::vector<mat4> mPosePalette;
+    std::vector<glm::mat4> mPosePalette;
     unsigned int mClip;
     float mPlayback;
-    Transform mModel;
-
-    inline AnimationInstance() : mClip(0), mPlayback(0.0f) {}
+    bool load;
+    inline AnimationInstance() : mClip(0), mPlayback(0.0f), load(false) {}
 };
 
 class Model
@@ -45,6 +46,9 @@ public:
     string name;
     static map<string, Model*> LoadedModel;
     EditorResource<SceneModel*> refSceneModels;
+    Skeleton mSkeleton; // 模型的骨骼
+    std::vector<FastClip> mClips;
+    AnimationInstance instance;
 
     // constructor, expects a filepath to a 3D model.
     Model(string const &path, bool gamma = false);
@@ -52,8 +56,7 @@ public:
     ~Model();
     
 private:
-    Skeleton mSkeleton; // 模型的骨骼
-    std::vector<FastClip> mClips;
+    
     AnimationInstance mAnimInfo; // 动画信息
 
     // loads a model with supported ASSIMP extensions from file and stores the resulting meshes in the meshes vector.
@@ -68,11 +71,6 @@ private:
     // the required info is returned as a Texture struct.
     vector<Texture2D*> loadMaterialTextures(aiMaterial *mat, aiTextureType type);
 
-    void loadSkeleton(const aiScene* scene);
-    std::vector<std::string> loadJointNames(const aiScene* scene);
-    std::vector<Clip> loadAnimationClips(const aiScene* scene);
-    Pose loadRestPose(const aiScene* scene);
-    Pose loadBindPose(const aiScene* scene);
-    void loadAnimation(const aiScene* scene);
+
 
 };

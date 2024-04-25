@@ -14,7 +14,7 @@ Scene::Scene(RendererWindow *_window) : window(_window), render_pipeline(RenderP
 
 Scene::~Scene() {}
 void Scene::RegisterSceneObject(SceneObject *object) { scene_object_list.push_back(object); }
-void Scene::RenderScene() { render_pipeline.Render(); }
+void Scene::RenderScene(float deltaTime) { render_pipeline.Render(deltaTime); }
 
 void Scene::RegisterGlobalLight( SceneLight *light)
 {
